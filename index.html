@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Genius — AI &amp; Coding Academy for Kids</title>
+  <meta name="description"
+    content="Web Genius is the world's first AI &amp; Coding academy for kids ages 10-16. Self-paced lessons and a live 3-month cohort with mentorship, portfolio projects, and a certified diploma." />
+
+  <!-- Preload Critical Resources -->
+  <link rel="preload" as="image" href="hero.png">
+
+  <!-- Font Optimization -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="index.css" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+</head>
+
+<body>
+
+  <!-- ========================================================
+       NAVIGATION
+       ======================================================== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="#" class="nav-logo">Web<span>Genius</span></a>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#paths" data-i18n="nav.programs">Programs</a>
+        <a href="#curriculum" data-i18n="nav.curriculum">Curriculum</a>
+        <a href="#reviews" data-i18n="nav.reviews">Reviews</a>
+        <a href="#paths" data-i18n="nav.pricing">Pricing</a>
+        <a href="#" class="nav-cta" data-i18n="nav.cta">Join Live Academy</a>
+      </div>
+
+      <!-- Region / Language switcher — in navbar -->
+      <div class="region-switcher" id="regionSwitcher">
+        <button class="active" data-region="en">🇺🇸 EN</button>
+        <button data-region="lt">🇱🇹 LT</button>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========================================================
+       1. HERO
+       ======================================================== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content reveal">
+        <div class="hero-badge" data-i18n="hero.badge">🚀 Now enrolling — Spring 2026 Cohort</div>
+        <h1 data-i18n="hero.headline">Turn Screen Time into <span class="gradient-text">Superpowers.</span></h1>
+        <p data-i18n="hero.sub">The world's first AI &amp; Coding academy for kids. Start learning today; master the
+          future in our Live Academy.</p>
+        <div class="hero-buttons">
+          <a href="#paths" class="btn btn-primary" data-i18n="hero.cta_primary">Join the Live Academy →</a>
+          <a href="#paths" class="btn btn-secondary" data-i18n="hero.cta_secondary">Explore Self-Paced Courses</a>
+        </div>
+      </div>
+      <div class="hero-image reveal">
+        <img src="hero.png" alt="Diverse group of kids coding with holographic AI elements" width="580" height="580" />
+        <div class="hero-float" data-i18n="hero.float1">🤖 AI &amp; Machine Learning</div>
+        <div class="hero-float" data-i18n="hero.float2">🎨 Creative Coding</div>
+        <div class="hero-float" data-i18n="hero.float3">🚀 Build Real Apps</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       2. PROBLEM / SOLUTION STRIP
+       ======================================================== -->
+  <section class="problem-solution reveal">
+    <div class="container">
+      <div class="ps-block ps-problem">
+        <h3 data-i18n="ps.problem_title">Schools are teaching 2010 skills.</h3>
+        <p data-i18n="ps.problem_desc">Outdated curricula leave kids unprepared for the AI-powered economy they'll
+          inherit.</p>
+      </div>
+      <div class="ps-divider"></div>
+      <div class="ps-block ps-solution">
+        <h3 data-i18n="ps.solution_title">Web Genius teaches 2030 skills.</h3>
+        <p data-i18n="ps.solution_desc">Generative AI (Gemini / ChatGPT), Python programming, and Digital Ethics — the
+          skills that matter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       3. TWO PATHS
+       ======================================================== -->
+  <section class="two-paths section-padding" id="paths">
+    <div class="container">
+      <div class="section-title reveal">
+        <h2 data-i18n="paths.title">Choose Your Path</h2>
+        <p data-i18n="paths.subtitle">Whether your child is just curious or ready to commit, we have the right program.
+        </p>
+      </div>
+
+      <div class="paths-grid">
+        <!-- Card 1: Explorer -->
+        <div class="path-card reveal">
+          <div class="card-icon">🔭</div>
+          <h3 data-i18n="paths.explorer.title">The Explorer</h3>
+          <p class="card-subtitle" data-i18n="paths.explorer.subtitle">For the curious beginner.</p>
+          <ul class="card-features">
+            <li data-i18n="paths.explorer.f1">Access to full video library</li>
+            <li data-i18n="paths.explorer.f2">Basic quizzes &amp; challenges</li>
+            <li data-i18n="paths.explorer.f3">Learn at your own speed</li>
+            <li data-i18n="paths.explorer.f4">Community forum access</li>
+          </ul>
+          <div class="card-price" data-i18n="paths.explorer.price">$149 <span>one-time</span></div>
+          <a href="#" class="btn btn-secondary" style="width:100%;justify-content:center;"
+            data-i18n="paths.explorer.cta">Get Started →</a>
+        </div>
+
+        <!-- Card 2: Future Creator -->
+        <div class="path-card recommended reveal">
+          <span class="recommended-badge" data-i18n="paths.creator.badge">⭐ Recommended</span>
+          <div class="card-icon">🚀</div>
+          <h3 data-i18n="paths.creator.title">The Future Creator</h3>
+          <p class="card-subtitle" data-i18n="paths.creator.subtitle">For the serious innovator.</p>
+          <ul class="card-features">
+            <li data-i18n="paths.creator.f1">3-Month Intensive Cohort</li>
+            <li data-i18n="paths.creator.f2">Live Weekly Mentorship</li>
+            <li data-i18n="paths.creator.f3">Build a Real Portfolio (Video Games, Movies, Apps)</li>
+            <li data-i18n="paths.creator.f4">Certified Diploma</li>
+            <li data-i18n="paths.creator.f5">Priority support &amp; grading</li>
+          </ul>
+          <div class="card-price" data-i18n="paths.creator.price">$750 <span>/ 3 months</span></div>
+          <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;"
+            data-i18n="paths.creator.cta">Apply Now (Limited Spots)</a>
+        </div>
+
+        <!-- Card 3: Recurring Class -->
+        <div class="path-card reveal">
+          <div class="card-icon">🔄</div>
+          <h3 data-i18n="paths.recurring.title">Weekly Class</h3>
+          <p class="card-subtitle" data-i18n="paths.recurring.subtitle">Consistent, weekly learning.</p>
+          <ul class="card-features">
+            <li data-i18n="paths.recurring.f1">Weekly 60-90 min sessions</li>
+            <li data-i18n="paths.recurring.f2">Continuous learning path</li>
+            <li data-i18n="paths.recurring.f3">Join anytime (if seats available)</li>
+            <li data-i18n="paths.recurring.f4">Pay per month or semester</li>
+          </ul>
+          <div class="card-price" data-i18n="paths.recurring.price">$120 <span>/ month</span></div>
+          <a href="#" class="btn btn-secondary" id="btn-recurring" style="width:100%;justify-content:center;"
+            data-i18n="paths.recurring.cta">Join Waitlist</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       4. CURRICULUM TIMELINE
+       ======================================================== -->
+  <section class="curriculum section-padding" id="curriculum">
+    <div class="container">
+      <div class="section-title reveal">
+        <h2 data-i18n="curriculum.title">The 3-Month Journey</h2>
+        <p data-i18n="curriculum.subtitle">A carefully crafted curriculum that turns beginners into creators.</p>
+      </div>
+
+      <div class="timeline">
+        <!-- Month 1 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 data-i18n="curriculum.m1.title">AI Art &amp; Storytelling</h3>
+            <p data-i18n="curriculum.m1.desc">Learn how to prompt AI image generators, create illustrated stories, and
+              explore the ethics of AI-generated content.</p>
+            <div class="tools">
+              <span>Midjourney</span>
+              <span>Gemini</span>
+              <span>ChatGPT</span>
+            </div>
+          </div>
+          <div class="timeline-label">
+            <span class="month-num">01</span>
+            <span class="month-text" data-i18n="curriculum.m1.label">Month One</span>
+          </div>
+        </div>
+
+        <!-- Month 2 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-label">
+            <span class="month-num">02</span>
+            <span class="month-text" data-i18n="curriculum.m2.label">Month Two</span>
+          </div>
+          <div class="timeline-content">
+            <h3 data-i18n="curriculum.m2.title">Video &amp; Audio Production</h3>
+            <p data-i18n="curriculum.m2.desc">Create animated shorts with AI voice-overs, edit videos, and produce
+              original audio content using cutting-edge tools.</p>
+            <div class="tools">
+              <span>Voice AI</span>
+              <span>Animation</span>
+              <span>Editing</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Month 3 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 data-i18n="curriculum.m3.title">Coding &amp; Game Assets</h3>
+            <p data-i18n="curriculum.m3.desc">Write real Python code, design web pages, and build game assets for a
+              final portfolio project that wows.</p>
+            <div class="tools">
+              <span>Python</span>
+              <span>Web Design</span>
+              <span>VS Code</span>
+            </div>
+          </div>
+          <div class="timeline-label">
+            <span class="month-num">03</span>
+            <span class="month-text" data-i18n="curriculum.m3.label">Month Three</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       5. SOCIAL PROOF / TRUST
+       ======================================================== -->
+  <section class="social-proof section-padding" id="reviews">
+    <div class="container">
+      <div class="section-title reveal">
+        <h2 data-i18n="social.title">Loved by Parents &amp; Kids</h2>
+        <p data-i18n="social.subtitle">See what families are saying about the Web Genius experience.</p>
+      </div>
+
+      <div class="reviews-grid">
+        <div class="review-card reveal">
+          <div class="review-stars">★★★★★</div>
+          <p data-i18n="social.r1.text">"My daughter went from watching YouTube all day to <strong>building her own
+              games</strong>. The mentors are incredible and she's so proud of her portfolio."</p>
+          <div class="review-author">
+            <div class="review-avatar">SK</div>
+            <div class="review-author-info">
+              <div class="name">Sarah K.</div>
+              <div class="role" data-i18n="social.r1.role">Parent, Austin TX</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card reveal">
+          <div class="review-stars">★★★★★</div>
+          <p data-i18n="social.r2.text">"Finally an academy that teaches kids <strong>real-world AI skills</strong>, not
+            just baby coding games. Worth every penny."</p>
+          <div class="review-author">
+            <div class="review-avatar">MJ</div>
+            <div class="review-author-info">
+              <div class="name">Marius J.</div>
+              <div class="role" data-i18n="social.r2.role">Parent, Vilnius LT</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card reveal">
+          <div class="review-stars">★★★★★</div>
+          <p data-i18n="social.r3.text">"My son loved the live sessions. He now <strong>explains AI to me</strong> at
+            the dinner table. Best investment in his future."</p>
+          <div class="review-author">
+            <div class="review-avatar">LP</div>
+            <div class="review-author-info">
+              <div class="name">Laura P.</div>
+              <div class="role" data-i18n="social.r3.role">Parent, Chicago IL</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool Logos -->
+      <div class="tool-logos reveal">
+        <div class="tool-logo">
+          <div class="logo-icon">✦</div> Gemini
+        </div>
+        <div class="tool-logo">
+          <div class="logo-icon">🐍</div> Python
+        </div>
+        <div class="tool-logo">
+          <div class="logo-icon">💻</div> VS Code
+        </div>
+        <div class="tool-logo">
+          <div class="logo-icon">🎨</div> Midjourney
+        </div>
+        <div class="tool-logo">
+          <div class="logo-icon">🤖</div> ChatGPT
+        </div>
+      </div>
+
+      <!-- Safety Badge -->
+      <div class="safety-badge reveal">
+        <div class="badge-icon">🛡️</div>
+        <div class="badge-text">
+          <h4 data-i18n="social.safety_title">Safety First — Always</h4>
+          <p data-i18n="social.safety_desc">GDPR &amp; COPPA compliant. All AI tools are used in supervised,
+            age-appropriate environments with strict content filters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA BANNER
+       ======================================================== -->
+  <section class="cta-banner reveal">
+    <div class="container">
+      <h2 data-i18n="cta.title">Ready to Give Your Child a Head Start?</h2>
+      <p data-i18n="cta.desc">Join hundreds of families building the next generation of creators, thinkers, and
+        innovators.</p>
+      <a href="#" class="btn-white" data-i18n="cta.btn">Apply to the Live Academy →</a>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       6. FOOTER
+       ======================================================== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">Web<span style="color:var(--gray-400)">Genius</span></a>
+          <p data-i18n="footer.brand_desc">Empowering the next generation with AI &amp; coding skills. Built by
+            educators, loved by families.</p>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.platform">Platform</h4>
+          <a href="student/login.html" data-i18n="footer.student_login">Student Login</a>
+          <a href="parent/login.html" data-i18n="footer.parent_portal">Parent Portal</a>
+          <a href="syllabus.html" data-i18n="footer.syllabus">Syllabus</a>
+          <a href="#paths" data-i18n="footer.pricing">Pricing</a>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.programs">Programs</h4>
+          <a href="#paths" data-i18n="footer.self_paced">Self-Paced Library</a>
+          <a href="#paths" data-i18n="footer.live_academy">Live Academy</a>
+          <a href="#curriculum" data-i18n="footer.curriculum">Curriculum</a>
+          <a href="faq.html" data-i18n="footer.faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.legal">Legal</h4>
+          <a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+          <a href="terms.html" data-i18n="footer.terms">Terms of Service</a>
+          <a href="#">GDPR / COPPA</a>
+          <a href="cookies.html" data-i18n="footer.cookies">Cookie Policy</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 Web Genius. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================
+       REGISTRATION MODAL
+       ======================================================== -->
+  <div class="modal-overlay" id="regModal">
+    <div class="modal-container">
+      <button class="modal-close" id="closeModal">&times;</button>
+      <div class="modal-header">
+        <h3 data-i18n="modal.title">Join the Live Academy</h3>
+        <p data-i18n="modal.subtitle">Secure your spot in the next cohort.</p>
+      </div>
+      <form class="modal-form" id="regForm">
+        <div class="form-group">
+          <label for="email" data-i18n="modal.email_label">Your Email Address</label>
+          <input type="email" id="email" name="email" placeholder="parent@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="cohort" data-i18n="modal.cohort_label">Select Cohort</label>
+          <select id="cohort" name="cohort" required>
+            <option value="" disabled selected data-i18n="modal.select_placeholder">Loading cohorts...</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" id="regSubmit">
+          <span data-i18n="modal.submit_btn">Complete Registration</span>
+        </button>
+        <p class="form-footer" data-i18n="modal.footer_text">We'll send next steps to your email. No payment required
+          today.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+
+</html>

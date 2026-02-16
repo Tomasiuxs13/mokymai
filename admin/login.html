@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login — Web Genius</title>
+    <link rel="stylesheet" href="../index.css" />
+    <link rel="stylesheet" href="admin.css" />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="login-body">
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <a href="../index.html" class="nav-logo"
+                style="text-align:center;display:block;margin-bottom:var(--space-xs);">Web<span>Genius</span></a>
+            <p class="login-subtitle">Admin Portal</p>
+
+            <form id="loginForm" autocomplete="on">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="admin@webgenius.com" required autocomplete="email" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required
+                        autocomplete="current-password" />
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" id="loginBtn">
+                    Sign In
+                </button>
+                <div class="login-error" id="loginError"></div>
+            </form>
+
+            <a href="../index.html" class="login-back">← Back to Web Genius</a>
+        </div>
+    </div>
+
+    <script src="../supabase.js"></script>
+    <script>
+        // Ensure supabase.js is loaded (fallback if script tag failed)
+        async function ensureSupabase() {
+            if (typeof signIn === 'function') return;
+            // Script tag failed — dynamically load it
+            const res = await fetch('../supabase.js');
+            const code = await res.text();
+            const s = document.createElement('script');
+            s.textContent = code;
+            document.head.appendChild(s);
+            // Wait briefly for execution
+            await new Promise(r => setTimeout(r, 100));
+            if (typeof signIn !== 'function') {
+                throw new Error('Failed to load authentication module. Please refresh the page.');
+            }
+        }
+
+        // If already logged in as admin, redirect
+        (async () => {
+            try {
+                await ensureSupabase();
+                const profile = await getProfile();
+                if (profile && profile.role === 'admin') {
+                    window.location.href = 'index.html';
+                }
+            } catch (e) { /* not logged in */ }
+        })();
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const errEl = document.getElementById('loginError');
+            errEl.textContent = '';
+            btn.textContent = 'Signing in…';
+            btn.disabled = true;
+
+            try {
+                await ensureSupabase();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                await signIn(email, password);
+
+                // Check role
+                const profile = await getProfile();
+                if (!profile || profile.role !== 'admin') {
+                    await signOut();
+                    throw new Error('Access denied. Admin account required.');
+                }
+
+                window.location.href = 'index.html';
+            } catch (err) {
+                errEl.textContent = err.message || 'Login failed. Please try again.';
+                btn.textContent = 'Sign In';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

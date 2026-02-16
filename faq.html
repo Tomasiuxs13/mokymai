@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ — Web Genius</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <style>
+        details {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        details[open] {
+            box-shadow: var(--shadow-md);
+            border-color: var(--blue-light);
+        }
+
+        summary {
+            padding: var(--space-md) var(--space-lg);
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            position: relative;
+            color: var(--gray-900);
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: '+';
+            position: absolute;
+            right: var(--space-lg);
+            color: var(--blue);
+            font-weight: 800;
+        }
+
+        details[open] summary::after {
+            content: '−';
+        }
+
+        .faq-body {
+            padding: 0 var(--space-lg) var(--space-lg);
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--gray-50);
+            margin-top: var(--space-xs);
+            padding-top: var(--space-md);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">Web<span>Genius</span></a>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html#paths" data-i18n="nav.programs">Programs</a>
+                <a href="index.html#curriculum" data-i18n="nav.curriculum">Curriculum</a>
+                <a href="index.html#reviews" data-i18n="nav.reviews">Reviews</a>
+                <a href="index.html#paths" data-i18n="nav.pricing">Pricing</a>
+                <a href="index.html#paths" class="nav-cta" data-i18n="nav.cta">Join Live Academy</a>
+            </div>
+
+            <!-- Region / Language switcher — in navbar -->
+            <div class="region-switcher" id="regionSwitcher">
+                <button class="active" data-region="en">🇺🇸 EN</button>
+                <button data-region="lt">🇱🇹 LT</button>
+            </div>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <header class="section-padding" style="background:var(--off-white);padding-bottom:var(--space-xl)">
+        <div class="container" style="text-align:center">
+            <h1 class="reveal" data-i18n="faq.title"
+                style="font-family:var(--font-heading);font-weight:800;font-size:2.5rem;color:var(--gray-900);margin-bottom:var(--space-sm)">
+                Frequently Asked <span
+                    style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Questions</span>
+            </h1>
+            <p class="reveal" data-i18n="faq.subtitle" style="color:var(--gray-600);max-width:600px;margin:0 auto">
+                Everything you need to know about our programs, cohorts, and safety policies.
+            </p>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <section class="section-padding" style="padding-top:0">
+        <div class="container" style="max-width:800px">
+
+            <details open class="reveal">
+                <summary data-i18n="faq.q1">What age group is this program for?</summary>
+                <div class="faq-body" data-i18n="faq.a1">
+                    Web Genius is specifically designed for children ages 10-16. Our curriculum is adapted to be
+                    engaging and safe for this age group, balancing fun creativity with technical skills.
+                </div>
+            </details>
+
+            <details class="reveal">
+                <summary data-i18n="faq.q2">Do we need a powerful computer?</summary>
+                <div class="faq-body" data-i18n="faq.a2">
+                    Not necessarily! Most of our tools run in the cloud (web browser). A standard laptop (Windows, Mac,
+                    or Chromebook) released in the last 4-5 years is sufficient. Tablets are okay for watching lessons
+                    but a keyboard/mouse is required for the coding and editing portions.
+                </div>
+            </details>
+
+            <details class="reveal">
+                <summary data-i18n="faq.q3">Is the AI content safe for kids?</summary>
+                <div class="faq-body" data-i18n="faq.a3">
+                    Absolutely. Safety is our #1 priority. We use filtered versions of AI tools and teach students
+                    specifically about digital safety, data privacy, and ethical use of AI. All live interactions are
+                    moderated by trained educators.
+                </div>
+            </details>
+
+            <details class="reveal">
+                <summary data-i18n="faq.q4">What happens if we miss a live session?</summary>
+                <div class="faq-body" data-i18n="faq.a4">
+                    All live mentorship sessions are recorded and made available in the Student Portal within 24 hours.
+                    Your child can watch the replay and submit questions to their mentor via the platform.
+                </div>
+            </details>
+
+            <details class="reveal">
+                <summary data-i18n="faq.q5">What is your refund policy?</summary>
+                <div class="faq-body" data-i18n="faq.a5">
+                    We offer a "Satisfaction Guarantee." If you are not happy with the program within the first 14 days
+                    of the cohort start date, let us know and we will issue a full refund, no questions asked.
+                </div>
+            </details>
+
+            <details class="reveal">
+                <summary data-i18n="faq.q6">Does my child get a certificate?</summary>
+                <div class="faq-body" data-i18n="faq.a6">
+                    Yes! Upon successful completion of the 3-month Live Academy and submission of the final portfolio
+                    project, students receive a verified digital diploma from Web Genius.
+                </div>
+            </details>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo">Web<span style="color:var(--gray-400)">Genius</span></a>
+                    <p data-i18n="footer.brand_desc">Empowering the next generation with AI & coding skills. Built by
+                        educators, loved by families.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.platform">Platform</h4>
+                    <a href="student/login.html" data-i18n="footer.student_login">Student Login</a>
+                    <a href="parent/login.html" data-i18n="footer.parent_portal">Parent Portal</a>
+                    <a href="syllabus.html" data-i18n="footer.syllabus">Syllabus</a>
+                    <a href="index.html#paths" data-i18n="footer.pricing">Pricing</a>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.programs">Programs</h4>
+                    <a href="index.html#paths" data-i18n="footer.self_paced">Self-Paced Library</a>
+                    <a href="index.html#paths" data-i18n="footer.live_academy">Live Academy</a>
+                    <a href="index.html#curriculum" data-i18n="footer.curriculum">Curriculum</a>
+                    <a href="faq.html" class="active-link" style="color:var(--blue)" data-i18n="footer.faq">FAQ</a>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.legal">Legal</h4>
+                    <a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+                    <a href="terms.html" data-i18n="footer.terms">Terms of Service</a>
+                    <a href="#">GDPR / COPPA</a>
+                    <a href="cookies.html" data-i18n="footer.cookies">Cookie Policy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Web Genius. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

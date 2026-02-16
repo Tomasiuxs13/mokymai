@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard — Web Genius</title>
+    <link rel="stylesheet" href="/index.css" />
+    <link rel="stylesheet" href="/admin/admin.css?v=3" />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- ======== SIDEBAR ======== -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html" class="nav-logo">Web<span>Genius</span></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Main</div>
+                <a href="#dashboard" data-section="dashboard">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+
+                <div class="nav-section-label">Content</div>
+                <a href="#cohorts" data-section="cohorts">
+                    <span class="nav-icon">📅</span> Cohorts
+                </a>
+                <a href="#courses" data-section="courses">
+                    <span class="nav-icon">📚</span> Courses & Lessons
+                </a>
+                <a href="#assignments" data-section="assignments">
+                    <span class="nav-icon">📝</span> Assignments
+                </a>
+                <a href="#schedule" data-section="schedule">
+                    <span class="nav-icon">📅</span> Schedule
+                </a>
+
+
+                <div class="nav-section-label">People</div>
+                <a href="#students" data-section="students">
+                    <span class="nav-icon">🎓</span> Students
+                </a>
+                <a href="#parents" data-section="parents">
+                    <span class="nav-icon">👨‍👩‍👧</span> Parents
+                </a>
+
+                <div class="nav-section-label">Achievements</div>
+                <a href="#diplomas" data-section="diplomas">
+                    <span class="nav-icon">🏆</span> Diplomas
+                </a>
+                <a href="#progress" data-section="progress">
+                    <span class="nav-icon">📊</span> Progress
+                </a>
+
+                <div class="nav-section-label">Communication</div>
+                <a href="#announcements" data-section="announcements">
+                    <span class="nav-icon">📢</span> Announcements
+                </a>
+
+                <div class="nav-section-label">System</div>
+                <a href="#settings" data-section="settings">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-user">
+                    <div class="admin-avatar" id="adminInitials">A</div>
+                    <div class="admin-user-info">
+                        <div class="admin-name" id="adminName">Admin</div>
+                        <div class="admin-role">Administrator</div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="logoutBtn">Sign Out</button>
+            </div>
+        </aside>
+
+        <!-- ======== MAIN CONTENT ======== -->
+        <main class="admin-main">
+
+            <!-- Top bar -->
+            <header class="admin-topbar">
+                <div style="display:flex;align-items:center">
+                    <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+                    <h1 id="topbarTitle">Dashboard</h1>
+                </div>
+                <div class="topbar-actions">
+                    <a href="../index.html" class="btn-sm btn-edit" target="_blank">View Site ↗</a>
+                </div>
+            </header>
+
+            <div class="admin-content">
+
+                <!-- ===== DASHBOARD ===== -->
+                <section id="section-dashboard" class="admin-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">🎓</div>
+                            <div class="stat-value" id="statStudents">—</div>
+                            <div class="stat-label">Total Students</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">👨‍👩‍👧</div>
+                            <div class="stat-value" id="statParents">—</div>
+                            <div class="stat-label">Total Parents</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">📅</div>
+                            <div class="stat-value" id="statCohorts">—</div>
+                            <div class="stat-label">Active Cohorts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon amber">✅</div>
+                            <div class="stat-value" id="statEnrollments">—</div>
+                            <div class="stat-label">Active Enrollments</div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid"
+                        style="grid-template-columns: 2fr 1fr; gap: var(--space-xl); margin-bottom: var(--space-xl)">
+                        <div class="data-table-wrap" style="padding:var(--space-xl)">
+                            <h3 style="font-family:var(--font-heading);font-weight:700;margin-bottom:var(--space-md)">
+                                Student Growth</h3>
+                            <div style="height: 300px">
+                                <canvas id="chartStudentGrowth"></canvas>
+                            </div>
+                        </div>
+                        <div class="data-table-wrap" style="padding:var(--space-xl)">
+                            <h3 style="font-family:var(--font-heading);font-weight:700;margin-bottom:var(--space-md)">
+                                Course Completion</h3>
+                            <div style="height: 300px">
+                                <canvas id="chartCompletion"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" style="grid-template-columns: 1.5fr 1fr; gap: var(--space-xl)">
+                        <!-- Pending Grading -->
+                        <div class="data-table-wrap" style="padding:0">
+                            <div
+                                style="padding:var(--space-lg);border-bottom:1px solid var(--gray-100);display:flex;justify-content:space-between;align-items:center">
+                                <h3 style="font-family:var(--font-heading);font-weight:700">Needs Grading</h3>
+                                <button class="btn-sm" onclick="navigate('assignments')">View All</button>
+                            </div>
+                            <div id="pendingGradingList" style="max-height: 300px; overflow-y: auto;">
+                                <div class="empty-state" style="padding:var(--space-xl)">
+                                    <p>Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="data-table-wrap" style="padding:var(--space-xl)">
+                            <h3 style="font-family:var(--font-heading);font-weight:700;margin-bottom:var(--space-lg)">
+                                Quick Actions</h3>
+                            <div style="display:flex;flex-direction:column;gap:var(--space-sm)">
+                                <button class="btn-sm btn-edit"
+                                    onclick="navigate('cohorts'); setTimeout(()=>openCohortModal(),100)"
+                                    style="justify-content:center;padding:.7rem">📅 Create New Cohort</button>
+                                <button class="btn-sm btn-edit"
+                                    onclick="navigate('courses'); setTimeout(()=>openCourseModal(),100)"
+                                    style="justify-content:center;padding:.7rem">📚 Add New Course</button>
+                                <button class="btn-sm btn-edit" onclick="navigate('students')"
+                                    style="justify-content:center;padding:.7rem">🎓 View Students</button>
+                                <button class="btn-sm btn-edit" onclick="navigate('parents')"
+                                    style="justify-content:center;padding:.7rem">👨‍👩‍👧 Manage Parents</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== COHORTS ===== -->
+                <section id="section-cohorts" class="admin-section">
+                    <div class="table-header">
+                        <h2>All Cohorts</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <div class="lang-filter-tabs" id="cohortLangFilter">
+                                <button class="lang-tab active" onclick="filterCohortsByLang('all')">All</button>
+                                <button class="lang-tab" onclick="filterCohortsByLang('en')">🇺🇸 English</button>
+                                <button class="lang-tab" onclick="filterCohortsByLang('lt')">🇱🇹 Lietuvių</button>
+                            </div>
+                            <button class="btn btn-primary" style="padding:.6rem 1.2rem;font-size:.9rem"
+                                onclick="openCohortModal()">+ New Cohort</button>
+                        </div>
+                    </div>
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="name">Name</th>
+                                    <th data-sort="language">Lang</th>
+                                    <th data-sort="starts_at">Start</th>
+                                    <th data-sort="ends_at">End</th>
+                                    <th data-sort="max_seats">Seats</th>
+                                    <th data-sort="price_usd">Price</th>
+                                    <th data-sort="status">Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cohortsTableBody">
+                                <tr>
+                                    <td colspan="8" class="empty-state">
+                                        <p>Loading…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="cohortsPagination"></div>
+                    </div>
+                </section>
+
+                <!-- ===== COURSES & LESSONS ===== -->
+                <section id="section-courses" class="admin-section">
+                    <div class="table-header">
+                        <h2>All Courses</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <div class="lang-filter-tabs" id="courseLangFilter">
+                                <button class="lang-tab active" onclick="filterCoursesByLang('all')">All</button>
+                                <button class="lang-tab" onclick="filterCoursesByLang('en')">🇺🇸 English</button>
+                                <button class="lang-tab" onclick="filterCoursesByLang('lt')">🇱🇹 Lietuvių</button>
+                            </div>
+                            <button class="btn btn-primary" style="padding:.6rem 1.2rem;font-size:.9rem"
+                                onclick="openCourseModal()">+ New Course</button>
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xl)">
+                        <!-- Courses list -->
+                        <div class="data-table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th data-sort="title">Title</th>
+                                        <th data-sort="language">Lang</th>
+                                        <th data-sort="type">Type</th>
+                                        <th data-sort="cohorts.name">Cohort</th>
+                                        <th data-sort="month">Month</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="coursesTableBody">
+                                    <tr>
+                                        <td colspan="6" class="empty-state">
+                                            <p>Loading…</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div id="coursesPagination"></div>
+                        </div>
+
+                        <!-- Lessons panel -->
+                        <div class="data-table-wrap" style="padding:var(--space-lg)" id="lessonPanel">
+                            <div class="empty-state">
+                                <div class="empty-icon">📚</div>
+                                <p>Select a course to view its lessons</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ===== ASSIGNMENTS ===== -->
+                <section id="section-assignments" class="admin-section">
+                    <div class="table-header">
+                        <h2>All Assignments</h2>
+                        <button class="btn btn-primary" style="padding:.6rem 1.2rem;font-size:.9rem"
+                            onclick="openAssignmentModal()">+ New Assignment</button>
+                    </div>
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="title">Title</th>
+                                    <th data-sort="lesson_id">Lesson</th>
+                                    <th data-sort="due_offset_days">Due Offset</th>
+                                    <th data-sort="max_points">Points</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="assignmentsTableBody">
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <p>Loading…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="assignmentsPagination"></div>
+                    </div>
+                </section>
+
+
+                <!-- ===== SCHEDULE ===== -->
+                <section id="section-schedule" class="admin-section">
+                    <div class="table-header">
+                        <h2>Live Class Schedule</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <select id="scheduleCohortFilter" onchange="filterSchedule()"
+                                style="padding:.6rem;border-radius:var(--radius-sm);border:1px solid var(--gray-300)">
+                                <option value="">All Cohorts</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="openSessionModal()">+ New Session</button>
+                        </div>
+                    </div>
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Cohort</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Link</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                        <div id="schedulePagination"></div>
+                    </div>
+                </section>
+
+                <!-- ===== STUDENTS ===== -->
+                <section id="section-students" class="admin-section">
+                    <div class="table-header">
+                        <h2>All Students</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <div class="lang-filter-tabs" id="studentLangFilter">
+                                <button class="lang-tab active" onclick="filterStudentsByLang('all')">All</button>
+                                <button class="lang-tab" onclick="filterStudentsByLang('en')">🇺🇸 English</button>
+                                <button class="lang-tab" onclick="filterStudentsByLang('lt')">🇱🇹 Lietuvių</button>
+                            </div>
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" placeholder="Search students…"
+                                    oninput="filterStudents(this.value)" />
+                            </div>
+                            <button class="btn btn-primary" style="padding:.6rem 1.2rem;font-size:.9rem"
+                                onclick="openStudentModal()">+ Add Student</button>
+                        </div>
+                    </div>
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="full_name">Student</th>
+                                    <th data-sort="created_at">Joined</th>
+                                    <th>Enrollments</th>
+                                    <th data-sort="locale">Lang</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <p>Loading…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="studentsPagination"></div>
+                    </div>
+                </section>
+
+                <!-- ===== PARENTS ===== -->
+                <section id="section-parents" class="admin-section">
+                    <div class="table-header">
+                        <h2>All Parents</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" placeholder="Search parents…" oninput="filterParents(this.value)" />
+                            </div>
+                            <button class="btn btn-primary" style="padding:.6rem 1.2rem;font-size:.9rem"
+                                onclick="openParentModal()">+ Add Parent</button>
+                        </div>
+                    </div>
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="full_name">Parent</th>
+                                    <th data-sort="created_at">Joined</th>
+                                    <th>Linked Students</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parentsTableBody">
+                                <tr>
+                                    <td colspan="4" class="empty-state">
+                                        <p>Loading…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="parentsPagination"></div>
+                    </div>
+                </section>
+
+                <!-- ===== DIPLOMAS ===== -->
+                <section id="section-diplomas" class="admin-section">
+                    <div class="table-header">
+                        <h2>All Diplomas / Certificates</h2>
+                        <button class="btn btn-primary" style="padding:.6rem 1.2rem;font-size:.9rem"
+                            onclick="openDiplomaModal()">+ Issue Diploma</button>
+                    </div>
+
+                    <!-- Stats row -->
+                    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:var(--space-xl)">
+                        <div class="stat-card">
+                            <div class="stat-icon green">🏆</div>
+                            <div class="stat-value" id="statDiplomas">—</div>
+                            <div class="stat-label">Total Issued</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon blue">📊</div>
+                            <div class="stat-value" id="statAvgGrade">—</div>
+                            <div class="stat-label">Average Grade</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">📅</div>
+                            <div class="stat-value" id="statRecentDiplomas">—</div>
+                            <div class="stat-label">This Month</div>
+                        </div>
+                    </div>
+
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="profiles.full_name">Student</th>
+                                    <th data-sort="cohorts.name">Cohort</th>
+                                    <th data-sort="issued_at">Issued</th>
+                                    <th data-sort="final_grade">Final Grade</th>
+                                    <th>Certificate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="diplomasTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <p>Loading…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="diplomasPagination"></div>
+                    </div>
+                </section>
+
+                <!-- ===== PROGRESS OVERVIEW ===== -->
+                <section id="section-progress" class="admin-section">
+                    <div class="table-header">
+                        <h2>Progress Overview</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <select id="progressCohortFilter" onchange="loadProgress()"
+                                style="padding:.45rem .8rem;border-radius:var(--radius-sm);border:1px solid var(--gray-200);font-size:.85rem">
+                                <option value="">All Cohorts</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Summary stats -->
+                    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:var(--space-xl)">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">👥</div>
+                            <div class="stat-value" id="progStatStudents">—</div>
+                            <div class="stat-label">Active Students</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">✅</div>
+                            <div class="stat-value" id="progStatCompleted">—</div>
+                            <div class="stat-label">Lessons Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">📈</div>
+                            <div class="stat-value" id="progStatAvg">—</div>
+                            <div class="stat-label">Avg Completion</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">📖</div>
+                            <div class="stat-value" id="progStatLessons">—</div>
+                            <div class="stat-label">Total Lessons</div>
+                        </div>
+                    </div>
+
+                    <!-- Course cards grid -->
+                    <div id="progressCoursesGrid"></div>
+
+                    <!-- Lesson breakdown (shown when a course card is clicked) -->
+                    <div id="progressLessonBreakdown" style="margin-top:var(--space-xl)"></div>
+                </section>
+
+                <!-- ===== ANNOUNCEMENTS ===== -->
+                <section id="section-announcements" class="admin-section">
+                    <div class="table-header">
+                        <h2>Announcements</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <select id="announcementAudienceFilter" onchange="filterAnnouncements()"
+                                style="padding:.45rem .8rem;border-radius:var(--radius-sm);border:1px solid var(--gray-200);font-size:.85rem">
+                                <option value="">All Audiences</option>
+                                <option value="all">Everyone</option>
+                                <option value="students">Students Only</option>
+                                <option value="parents">Parents Only</option>
+                            </select>
+                            <button class="btn-primary" onclick="openAnnouncementModal()">+ New Announcement</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" style="margin-bottom:var(--space-xl)">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">📨</div>
+                            <div class="stat-value" id="statTotalAnnouncements">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">✅</div>
+                            <div class="stat-value" id="statActiveAnnouncements">0</div>
+                            <div class="stat-label">Active Now</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">🚨</div>
+                            <div class="stat-value" id="statUrgentAnnouncements">0</div>
+                            <div class="stat-label">Urgent</div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th data-sort="title">Title</th>
+                                    <th data-sort="audience">Audience</th>
+                                    <th data-sort="priority">Priority</th>
+                                    <th data-sort="published_at">Published</th>
+                                    <th data-sort="expires_at">Expires</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="announcementsTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-state">
+                                        <p>Loading…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="announcementsPagination"></div>
+                    </div>
+                </section>
+
+                <!-- ===== SETTINGS ===== -->
+                <section id="section-settings" class="admin-section">
+                    <div class="table-header">
+                        <h2>Platform Settings</h2>
+                    </div>
+                    <div class="data-table-wrap" style="max-width: 600px; padding: var(--space-xl)">
+                        <div class="form-group">
+                            <label>Site Name</label>
+                            <input id="setSiteName" type="text" placeholder="e.g. Web Genius Academy" />
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Price (USD)</label>
+                                <input id="setPriceUSD" type="number" step="0.01" />
+                            </div>
+                            <div class="form-group">
+                                <label>Price (EUR)</label>
+                                <input id="setPriceEUR" type="number" step="0.01" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Email</label>
+                            <input id="setContactEmail" type="email" placeholder="hello@example.com" />
+                        </div>
+                        <div style="margin-top:var(--space-lg);text-align:right">
+                            <button class="btn-save" onclick="saveSettings()">Save Changes</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div><!-- /admin-content -->
+        </main>
+    </div><!-- /admin-layout -->
+
+    <!-- ======== MODAL ======== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal</h3>
+                <button class="modal-close">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="modalCancel">Cancel</button>
+                <button class="btn-save" id="modalSave">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== DETAIL PANEL ======== -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-panel-header">
+            <h3 id="detailPanelTitle">Details</h3>
+            <button class="modal-close" id="detailPanelClose">✕</button>
+        </div>
+        <div class="detail-panel-body" id="detailPanelBody"></div>
+    </div>
+
+    <!-- ======== TOAST CONTAINER ======== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ======== SCRIPTS ======== -->
+    <script src="/supabase.js"></script>
+    <script src="/admin/admin.js?v=3"></script>
+
+</body>
+
+</html>

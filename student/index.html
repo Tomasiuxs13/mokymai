@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard — Web Genius</title>
+    <link rel="stylesheet" href="/index.css" />
+    <link rel="stylesheet" href="/student/student.css" />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="admin-layout">
+        <!-- Using admin-layout class for consistent styling -->
+
+        <!-- ======== SIDEBAR ======== -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html" class="nav-logo">Web<span>Genius</span></a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-label">Main</div>
+                <a href="#dashboard" data-section="dashboard" class="active">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a href="#courses" data-section="courses">
+                    <span class="nav-icon">📚</span> My Courses
+                </a>
+
+                <div class="nav-section-label">Learning</div>
+                <a href="#schedule" data-section="schedule">
+                    <span class="nav-icon">📅</span> <span data-i18n="nav.schedule">Schedule</span>
+                </a>
+                <a href="#assignments" data-section="assignments">
+                    <span class="nav-icon">📝</span> <span data-i18n="nav.assignments">Assignments</span>
+                </a>
+
+                <a href="#achievements" data-section="achievements">
+                    <span class="nav-icon">🏆</span> Achievements
+                </a>
+
+                <div class="nav-section-label">Account</div>
+                <a href="#profile" data-section="profile">
+                    <span class="nav-icon">👤</span> Profile
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-user">
+                    <div class="admin-avatar" id="userAvatar">S</div>
+                    <div class="admin-user-info">
+                        <div class="admin-name" id="userName">Student</div>
+                        <div class="admin-role">Student</div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="logoutBtn">Sign Out</button>
+            </div>
+        </aside>
+
+        <!-- ======== MAIN CONTENT ======== -->
+        <main class="admin-main">
+
+            <!-- Top bar -->
+            <header class="admin-topbar">
+                <div style="display:flex;align-items:center">
+                    <button class="sidebar-toggle" id="menuToggle">☰</button>
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="topbar-actions">
+                    <a href="../index.html" class="btn-sm btn-primary" target="_blank"
+                        style="text-decoration:none;color:white;">View Site ↗</a>
+                </div>
+            </header>
+
+            <div class="admin-content" id="contentArea">
+                <!-- Dynamic Content Loaded Here -->
+                <div class="loading-state">Loading...</div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="/supabase.js"></script>
+    <script src="/student/i18n.js"></script>
+    <script src="/student/student.js"></script>
+</body>
+
+</html>

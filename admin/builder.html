@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Builder — Web Genius</title>
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/admin/admin.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Builder Specific Styles */
+        .builder-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .builder-sidebar {
+            background: #fff;
+            border-right: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .builder-header {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+        }
+
+        .builder-content {
+            background: var(--gray-50);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .course-structure {
+            padding: var(--space-md);
+        }
+
+        .module-item {
+            background: #fff;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-md);
+            transition: box-shadow 0.2s;
+        }
+
+        .module-header {
+            padding: var(--space-sm) var(--space-md);
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .module-lessons {
+            padding: var(--space-xs);
+            min-height: 10px;
+            /* Drop target even if empty */
+        }
+
+        .lesson-node {
+            display: flex;
+            align-items: center;
+            padding: var(--space-sm);
+            margin: var(--space-xs) 0;
+            background: #fff;
+            border: 1px solid var(--gray-100);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lesson-node:hover {
+            border-color: var(--primary-300);
+            background: var(--primary-50);
+        }
+
+        .lesson-node.active {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+            box-shadow: 0 0 0 1px var(--primary-500);
+        }
+
+        .lesson-node.dragging {
+            opacity: 0.5;
+            background: var(--gray-100);
+        }
+
+        .drag-handle {
+            color: var(--gray-400);
+            margin-right: var(--space-sm);
+            cursor: grab;
+        }
+
+        /* Editor Area */
+        .editor-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+            background: #fff;
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--gray-400);
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: var(--space-lg);
+        }
+
+        .tab {
+            padding: var(--space-sm) var(--space-md);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary-600);
+            color: var(--primary-600);
+        }
+
+        /* TipTap/Editor styling overrides */
+        .ProseMirror {
+            outline: none;
+            min-height: 300px;
+            padding: var(--space-md);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+        }
+
+        .ProseMirror:focus {
+            border-color: var(--primary-500);
+        }
+
+        /* Floating save button */
+        .save-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 40px;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+
+        .save-bar.visible {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="builder-layout">
+        <!-- Sidebar -->
+        <aside class="builder-sidebar">
+            <div class="builder-header">
+                <a href="/admin/#courses" style="text-decoration:none;color:var(--gray-600)">&larr; Back</a>
+                <h3 style="margin:0;font-size:1rem" id="courseNameTitle">Loading...</h3>
+            </div>
+
+            <div class="builder-controls"
+                style="padding:var(--space-sm);border-bottom:1px solid var(--gray-100);display:flex;gap:var(--space-xs)">
+                <button class="btn-sm" onclick="addModule()">+ Module</button>
+                <button class="btn-sm" onclick="addLesson()">+ Lesson</button>
+            </div>
+
+            <div class="course-structure" id="courseStructure">
+                <!-- Populated by JS -->
+                <div style="padding:20px;text-align:center;color:var(--gray-500)">Loading Structure...</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="builder-content">
+            <div id="editorArea" class="editor-container" style="display:none">
+                <div class="editor-header" style="margin-bottom:var(--space-lg)">
+                    <input type="text" id="editTitle" placeholder="Lesson Title"
+                        style="font-size:1.5rem;font-weight:700;border:none;width:100%;padding:5px 0;outline:none;background:transparent"
+                        oninput="markDirty()">
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('content')">Content</div>
+                    <div class="tab" onclick="switchTab('settings')">Settings</div>
+                    <!-- <div class="tab" onclick="switchTab('assignments')">Assignments</div> -->
+                </div>
+
+                <!-- Content Tab -->
+                <div id="tab-content" class="tab-content">
+                    <!-- TipTap Toolbar -->
+                    <div id="editorToolbar" class="rte-toolbar"
+                        style="margin-bottom:10px;border-bottom:none;background:var(--gray-50);padding:5px;border-radius:6px">
+                    </div>
+                    <div id="tiptapEditor"></div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="tab-settings" class="tab-content" style="display:none">
+                    <div class="form-group">
+                        <label>Video URL</label>
+                        <input type="text" id="editVideoUrl" placeholder="https://vimeo.com/..." oninput="markDirty()">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (min)</label>
+                        <input type="number" id="editDuration" placeholder="30" oninput="markDirty()">
+                    </div>
+                    <div class="form-group" style="display:flex;align-items:center;gap:10px">
+                        <input type="checkbox" id="editIsFree" onchange="markDirty()">
+                        <label for="editIsFree" style="margin:0">Free Preview</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="emptyState" class="empty-selection">
+                <p>Select a lesson to edit or create a new one.</p>
+            </div>
+        </main>
+
+        <!-- Save Bar -->
+        <div class="save-bar" id="saveBar">
+            <span style="font-size:.9rem;color:var(--gray-600)">Unsaved changes</span>
+            <button class="btn-primary" onclick="saveCurrent()" style="padding:6px 16px">Save</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/supabase.js"></script>
+    <!-- Tiptap CDN (Basic) -->
+    <script type="module">
+        import { Editor } from 'https://esm.sh/@tiptap/core';
+        import StarterKit from 'https://esm.sh/@tiptap/starter-kit';
+        import Link from 'https://esm.sh/@tiptap/extension-link';
+        import Image from 'https://esm.sh/@tiptap/extension-image';
+
+        window.TipTap = { Editor, StarterKit, Link, Image };
+    </script>
+    <script src="/admin/builder.js"></script>
+
+</body>
+
+</html>

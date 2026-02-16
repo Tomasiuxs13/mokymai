@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cookie Policy — Web Genius</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">Web<span>Genius</span></a>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html#paths" data-i18n="nav.programs">Programs</a>
+                <a href="index.html#curriculum" data-i18n="nav.curriculum">Curriculum</a>
+                <a href="index.html#reviews" data-i18n="nav.reviews">Reviews</a>
+                <a href="index.html#paths" data-i18n="nav.pricing">Pricing</a>
+            </div>
+
+            <!-- Region / Language switcher — in navbar -->
+            <div class="region-switcher" id="regionSwitcher">
+                <button class="active" data-region="en">🇺🇸 EN</button>
+                <button data-region="lt">🇱🇹 LT</button>
+            </div>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <section class="section-padding">
+        <div class="container" style="max-width:800px">
+            <h1 data-i18n="legal.cookies_title"
+                style="font-family:var(--font-heading);font-size:2rem;margin-bottom:var(--space-lg)">Cookie Policy</h1>
+            <p data-i18n="legal.last_updated" style="color:var(--gray-600);margin-bottom:var(--space-2xl)">Last Updated:
+                February 2026</p>
+
+            <div class="reveal" style="line-height:1.7;color:var(--gray-800)">
+                <h3 data-i18n="cookies.what_title" style="margin:2rem 0 1rem;font-family:var(--font-heading)">1. What
+                    Are Cookies?</h3>
+                <p data-i18n="cookies.what_text">Cookies are small text files stored on your device when you visit a
+                    website. They help the website function correctly and remember your preferences.</p>
+
+                <h3 data-i18n="cookies.use_title" style="margin:2rem 0 1rem;font-family:var(--font-heading)">2. How We
+                    Use Cookies</h3>
+                <p data-i18n="cookies.use_text">Web Genius uses cookies for the following purposes:</p>
+                <ul style="list-style:disc;margin-left:1.5rem;margin-top:1rem">
+                    <li data-i18n="cookies.use_list1"><strong>Essential Cookies:</strong> Required for the website to
+                        function (e.g., logging into the Student/Parent portal, processing payments).</li>
+                    <li data-i18n="cookies.use_list2"><strong>Preference Cookies:</strong> Remembering your language
+                        setting (EN/LT).</li>
+                    <li data-i18n="cookies.use_list3"><strong>Analytics Cookies:</strong> We use minimal analytics to
+                        see which pages are most popular. We do NOT track individual student browsing habits for
+                        advertising.</li>
+                </ul>
+
+                <h3 data-i18n="cookies.manage_title" style="margin:2rem 0 1rem;font-family:var(--font-heading)">3.
+                    Managing Cookies</h3>
+                <p data-i18n="cookies.manage_text">You can control specific cookie preferences in your browser settings.
+                    However, disabling essential cookies may prevent you from logging into your account.</p>
+
+                <h3 data-i18n="cookies.update_title" style="margin:2rem 0 1rem;font-family:var(--font-heading)">4.
+                    Updates</h3>
+                <p data-i18n="cookies.update_text">We may update this policy from time to time. Please check back
+                    regularly for any changes.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="nav-logo">Web<span style="color:var(--gray-400)">Genius</span></a>
+                    <p data-i18n="footer.brand_desc">Empowering the next generation with AI & coding skills. Built by
+                        educators, loved by families.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.platform">Platform</h4>
+                    <a href="student/login.html" data-i18n="footer.student_login">Student Login</a>
+                    <a href="parent/login.html" data-i18n="footer.parent_portal">Parent Portal</a>
+                    <a href="syllabus.html" data-i18n="footer.syllabus">Syllabus</a>
+                    <a href="index.html#paths" data-i18n="footer.pricing">Pricing</a>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.programs">Programs</h4>
+                    <a href="index.html#paths" data-i18n="footer.self_paced">Self-Paced Library</a>
+                    <a href="index.html#paths" data-i18n="footer.live_academy">Live Academy</a>
+                    <a href="index.html#curriculum" data-i18n="footer.curriculum">Curriculum</a>
+                    <a href="faq.html" data-i18n="footer.faq">FAQ</a>
+                </div>
+                <div class="footer-col">
+                    <h4 data-i18n="footer.legal">Legal</h4>
+                    <a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
+                    <a href="terms.html" data-i18n="footer.terms">Terms of Service</a>
+                    <a href="#">GDPR / COPPA</a>
+                    <a href="cookies.html" class="active-link" style="color:var(--blue)"
+                        data-i18n="footer.cookies">Cookie Policy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Web Genius. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
