@@ -11,6 +11,7 @@
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 </head>
 
 <body>
@@ -45,6 +46,11 @@
 
 
                 <div class="nav-section-label">People</div>
+                <a href="#registrations" data-section="registrations" style="display:flex;align-items:center">
+                    <div><span class="nav-icon">📋</span> Registrations (Leads)</div>
+                    <span id="registrationsBadge"
+                        style="display:none;background:#ef4444;color:white;padding:2px 6px;border-radius:10px;font-size:0.75rem;margin-left:auto;font-weight:bold">0</span>
+                </a>
                 <a href="#students" data-section="students">
                     <span class="nav-icon">🎓</span> Students
                 </a>
@@ -168,6 +174,8 @@
                                 <button class="btn-sm btn-edit"
                                     onclick="navigate('courses'); setTimeout(()=>openCourseModal(),100)"
                                     style="justify-content:center;padding:.7rem">📚 Add New Course</button>
+                                <button class="btn-sm btn-edit" onclick="navigate('registrations')"
+                                    style="justify-content:center;padding:.7rem">📋 View Registrations</button>
                                 <button class="btn-sm btn-edit" onclick="navigate('students')"
                                     style="justify-content:center;padding:.7rem">🎓 View Students</button>
                                 <button class="btn-sm btn-edit" onclick="navigate('parents')"
@@ -304,6 +312,13 @@
                     <div class="table-header">
                         <h2>Live Class Schedule</h2>
                         <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <div class="toggle-view"
+                                style="display:flex;background:var(--gray-100);padding:4px;border-radius:var(--radius-sm);margin-right:var(--space-md)">
+                                <button class="btn-sm active" id="viewListBtn" onclick="toggleScheduleView('list')"
+                                    style="background:white;box-shadow:0 1px 2px rgba(0,0,0,0.1);border:none">List</button>
+                                <button class="btn-sm" id="viewCalendarBtn" onclick="toggleScheduleView('calendar')"
+                                    style="background:transparent;border:none;color:var(--gray-500)">Calendar</button>
+                            </div>
                             <select id="scheduleCohortFilter" onchange="filterSchedule()"
                                 style="padding:.6rem;border-radius:var(--radius-sm);border:1px solid var(--gray-300)">
                                 <option value="">All Cohorts</option>
@@ -311,7 +326,7 @@
                             <button class="btn btn-primary" onclick="openSessionModal()">+ New Session</button>
                         </div>
                     </div>
-                    <div class="data-table-wrap">
+                    <div id="scheduleListView" class="data-table-wrap">
                         <table class="data-table">
                             <thead>
                                 <tr>
@@ -328,6 +343,10 @@
                             </tbody>
                         </table>
                         <div id="schedulePagination"></div>
+                    </div>
+
+                    <div id="scheduleCalendarView" class="data-table-wrap" style="display:none;padding:var(--space-lg)">
+                        <div id="fullCalendar"></div>
                     </div>
                 </section>
 
@@ -370,6 +389,47 @@
                             </tbody>
                         </table>
                         <div id="studentsPagination"></div>
+                    </div>
+                </section>
+
+                <!-- ===== REGISTRATIONS (LEADS) ===== -->
+                <section id="section-registrations" class="admin-section">
+                    <div class="table-header">
+                        <h2>Course Registrations (Leads)</h2>
+                        <div style="display:flex;align-items:center;gap:var(--space-md)">
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" placeholder="Search emails…"
+                                    oninput="filterRegistrations(this.value)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:var(--space-xl)">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">📋</div>
+                            <div class="stat-value" id="statTotalRegistrations">—</div>
+                            <div class="stat-label">Total Leads</div>
+                        </div>
+                    </div>
+                    <div class="data-table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="email">Email</th>
+                                    <th data-sort="cohorts.name">Requested Cohort</th>
+                                    <th data-sort="created_at">Date Submitted</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registrationsTableBody">
+                                <tr>
+                                    <td colspan="4" class="empty-state">
+                                        <p>Loading…</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="registrationsPagination"></div>
                     </div>
                 </section>
 

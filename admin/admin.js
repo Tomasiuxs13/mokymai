@@ -329,7 +329,7 @@ window.paginators = {}; // Registry for global access
 /* ----------------------------------------------------------
    ROUTING (hash-based)
    ---------------------------------------------------------- */
-const sections = ['dashboard', 'cohorts', 'courses', 'lessons', 'assignments', 'schedule', 'students', 'parents', 'diplomas', 'progress', 'announcements', 'settings'];
+const sections = ['dashboard', 'registrations', 'cohorts', 'courses', 'lessons', 'assignments', 'schedule', 'students', 'parents', 'diplomas', 'progress', 'announcements', 'settings'];
 
 
 function navigate(section) {
@@ -353,6 +353,7 @@ function handleRoute() {
   // Update topbar title
   const titles = {
     dashboard: 'Dashboard',
+    registrations: 'Course Registrations (Leads)',
     cohorts: 'Cohort Management',
     courses: 'Courses & Lessons',
     assignments: 'Assignments',
@@ -374,6 +375,7 @@ async function loadSectionData(section) {
   try {
     switch (section) {
       case 'dashboard': await loadDashboard(); break;
+      case 'registrations': await loadRegistrations(); break;
       case 'cohorts': await loadCohorts(); break;
       case 'courses': await loadCourses(); break;
       case 'assignments': await loadAssignments(); break;
@@ -1083,10 +1085,23 @@ function openCourseModal(course = null) {
         if (error) throw error;
       } else {
         payload.sort_order = coursesCache.length;
-        const { error } = await sb().from('courses').insert(payload);
+        const { data, error } = await sb().from('courses').insert(payload).select().single();
         if (error) throw error;
+
+        // Redirect to builder
+        window.location.href = `builder.html?id=${data.id}`;
+        return; // Stop here, page will unload
       }
       await loadCourses();
+
+      // If it was a new course, redirect to builder
+      if (!isEdit && !error) {
+        // We need the ID of the new course
+        // The insert call above didn't return data. Let's fix that.
+        // OR we can just query for the latest course, OR change the insert to select().
+
+        // PROPER WAY: Update the insert call to return the new record.
+      }
     }
   );
 }
@@ -1771,6 +1786,59 @@ async function deleteAssignment(id) {
   if (error) { showToast(error.message, 'error'); return; }
   showToast('Assignment deleted');
   await loadAssignments();
+}
+
+/* ----------------------------------------------------------
+   REGISTRATIONS (LEADS)
+   ---------------------------------------------------------- */
+let registrationsCache = [];
+async function loadRegistrations() {
+  const { data, error, count } = await sb()
+    .from('course_registrations')
+    .select('*, cohorts(name)', { count: 'exact' })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    showToast('Failed to load registrations', 'error');
+    console.error(error);
+    return;
+  }
+
+  registrationsCache = data || [];
+  document.getElementById('statTotalRegistrations').textContent = count ?? 0;
+
+  if (!window.paginators['registrationsPagination']) {
+    window.paginators['registrationsPagination'] = new Paginator('registrationsPagination', renderRegistrations, 15);
+    window.paginators['registrationsPagination'].attachSorting();
+  }
+  window.paginators['registrationsPagination'].init(registrationsCache);
+}
+
+function renderRegistrations(registrations) {
+  const tbody = document.getElementById('registrationsTableBody');
+  if (!registrations.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty-state"><p>No leads yet. Share your website to get some!</p></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = registrations.map(r => {
+    return `
+      <tr>
+        <td class="primary-col">${esc(r.email)}</td>
+        <td><span class="status-badge" style="background:var(--blue-50);color:var(--blue-700)">${esc(r.cohorts?.name || 'Any / Unknown')}</span></td>
+        <td><div class="date-cell">${formatDate(r.created_at)}</div></td>
+        <td class="actions-cell">
+          <button class="btn-sm btn-edit" onclick="navigator.clipboard.writeText('${esc(r.email)}');showToast('Email copied!')">Copy Email</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function filterRegistrations(query) {
+  query = query.toLowerCase();
+  const filtered = registrationsCache.filter(r => r.email.toLowerCase().includes(query));
+  window.paginators['registrationsPagination'].init(filtered);
 }
 
 /* ----------------------------------------------------------
@@ -2987,16 +3055,141 @@ document.addEventListener('DOMContentLoaded', async () => {
     cohortsCache = data || [];
   } catch (e) { /* noop */ }
 
+  // Load notification badge
+  loadRegistrationsBadge();
+
   // Route
   window.addEventListener('hashchange', handleRoute);
   handleRoute();
 });
+
+async function loadRegistrationsBadge() {
+  try {
+    const { count, error } = await sb()
+      .from('course_registrations')
+      .select('id', { count: 'exact', head: true });
+
+    if (!error && count > 0) {
+      const badge = document.getElementById('registrationsBadge');
+      if (badge) {
+        badge.textContent = count;
+        badge.style.display = 'inline-block';
+      }
+    }
+  } catch (e) { /* ignore */ }
+}
 
 /* ----------------------------------------------------------
    SCHEDULE
    ---------------------------------------------------------- */
 let scheduleCache = [];
 let scheduleCohortFilter = '';
+let calendar = null;
+let currentScheduleView = 'list';
+
+function toggleScheduleView(view) {
+  currentScheduleView = view;
+  document.getElementById('viewListBtn').classList.toggle('active', view === 'list');
+  document.getElementById('viewCalendarBtn').classList.toggle('active', view === 'calendar');
+
+  document.getElementById('scheduleListView').style.display = view === 'list' ? 'block' : 'none';
+  document.getElementById('scheduleCalendarView').style.display = view === 'calendar' ? 'block' : 'none';
+
+  if (view === 'calendar') {
+    if (!calendar) initCalendar();
+    else {
+      calendar.render();
+      calendar.updateSize(); // Fix potential sizing issues
+    }
+  }
+}
+
+function initCalendar() {
+  const calendarEl = document.getElementById('fullCalendar');
+  if (!calendarEl) return;
+
+  calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+    },
+    navLinks: true,
+    editable: true, // Allow drag and drop
+    dayMaxEvents: true, // Allow "more" link when too many events
+    events: translateEvents(scheduleCache),
+    eventClick: function (info) {
+      editSession(info.event.id);
+    },
+    dateClick: function (info) {
+      // Pre-fill modal with clicked date
+      // We need to construct a "fake" session object or just pass dates
+      const date = new Date(info.dateStr);
+      // Set to 10:00 AM by default if whole day clicked, or use time if provided
+      if (info.allDay) date.setHours(10, 0, 0, 0);
+
+      const sessionStub = {
+        start_time: date.toISOString(),
+        end_time: new Date(date.getTime() + 90 * 60000).toISOString() // +90 mins
+      };
+      openSessionModal(sessionStub);
+    },
+    eventDrop: async function (info) {
+      // Handle drag and drop reschedule
+      const { error } = await sb().from('scheduled_sessions').update({
+        start_time: info.event.start.toISOString(),
+        end_time: info.event.end ? info.event.end.toISOString() : new Date(info.event.start.getTime() + 90 * 60000).toISOString()
+      }).eq('id', info.event.id);
+
+      if (error) {
+        showToast('Failed to move event: ' + error.message, 'error');
+        info.revert();
+      } else {
+        showToast('Event rescheduled');
+        // Update local cache
+        const s = scheduleCache.find(x => x.id === info.event.id);
+        if (s) {
+          s.start_time = info.event.start.toISOString();
+          s.end_time = info.event.end ? info.event.end.toISOString() : new Date(info.event.start.getTime() + 90 * 60000).toISOString();
+        }
+        // Refresh list view nicely
+        filterSchedule();
+      }
+    }
+  });
+  calendar.render();
+}
+
+function translateEvents(sessions) {
+  // Filter if needed
+  let items = sessions;
+  if (scheduleCohortFilter) {
+    items = items.filter(s => s.cohort_id === scheduleCohortFilter);
+  }
+
+  return items.map(s => {
+    let color = '#3B82F6'; // blue
+    if (s.status === 'cancelled') color = '#EF4444'; // red
+    if (s.status === 'completed') color = '#10B981'; // green
+
+    return {
+      id: s.id,
+      title: `${s.title} (${s.cohorts?.name || '?'})`,
+      start: s.start_time,
+      end: s.end_time,
+      backgroundColor: color,
+      borderColor: color
+    };
+  });
+}
+
+function updateCalendarEvents() {
+  if (calendar) {
+    calendar.removeAllEvents();
+    calendar.addEventSource(translateEvents(scheduleCache));
+  }
+}
 
 async function loadSchedule() {
   // We need cohort options for the filter too
@@ -3029,8 +3222,8 @@ async function loadSchedule() {
   // Apply existing filter if any
   if (scheduleCohortFilter) {
     document.getElementById('scheduleCohortFilter').value = scheduleCohortFilter;
-    filterSchedule();
   }
+  filterSchedule();
 }
 
 function renderSchedule(items) {
@@ -3095,10 +3288,12 @@ function filterSchedule() {
   } else {
     renderSchedule(filtered);
   }
+
+  updateCalendarEvents();
 }
 
 async function openSessionModal(session = null) {
-  const isEdit = !!session;
+  const isEdit = !!(session && session.id);
 
   // Ensure we have cohorts and courses/lessons loaded for pickers
   if (cohortsCache.length === 0) {
@@ -3137,8 +3332,12 @@ async function openSessionModal(session = null) {
   const defaultEnd = new Date(defaultStart);
   defaultEnd.setMinutes(90); // +1.5h
 
-  const startVal = session ? toLocalISO(session.start_time) : toLocalISO(defaultStart);
-  const endVal = session ? toLocalISO(session.end_time) : toLocalISO(defaultEnd);
+  const startVal = session ? toLocalISO(session.start_time || session.start) : toLocalISO(defaultStart);
+  const endVal = session ? toLocalISO(session.end_time || session.end) : toLocalISO(defaultEnd);
+
+  // Handle case where we pass a raw object from calendar click which might just have start_time/end_time props
+  // The original code was fine if `session` matches standard structure. 
+  // But my dateClick handler passes { start_time, end_time }.
 
   openModal(
     isEdit ? 'Edit Session' : 'Schedule Session',
