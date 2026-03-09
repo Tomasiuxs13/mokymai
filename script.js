@@ -25,10 +25,10 @@ const i18n = {
         'hero.float3': '🚀 Build Real Apps',
 
         // Problem / Solution
-        'ps.problem_title': 'Schools are teaching 2010 skills.',
+        'ps.problem_title': '❌ Schools are teaching 2010 skills.',
         'ps.problem_desc': "Outdated curricula leave kids unprepared for the AI-powered economy they'll inherit.",
-        'ps.solution_title': 'Web Genius teaches 2030 skills.',
-        'ps.solution_desc': 'Generative AI (Gemini / ChatGPT), Python programming, and Digital Ethics — the skills that matter.',
+        'ps.solution_title': '✅ Web Genius teaches 2030 skills.',
+        'ps.solution_desc': 'Generative AI (Gemini / Suno), AI Agents (Antigravity), and Automation (n8n) — the skills that matter.',
 
         // Two Paths
         'paths.title': 'Choose Your Path',
@@ -70,9 +70,24 @@ const i18n = {
         'curriculum.m2.title': 'Video & Audio Production',
         'curriculum.m2.desc': 'Create animated shorts with AI voice-overs, edit videos, and produce original audio content using cutting-edge tools.',
         'curriculum.m2.label': 'Month Two',
-        'curriculum.m3.title': 'Coding & Game Assets',
-        'curriculum.m3.desc': 'Write real Python code, design web pages, and build game assets for a final portfolio project that wows.',
+        'curriculum.m3.title': 'AI Apps & Automation',
+        'curriculum.m3.desc': 'Build real apps using AI agents like Antigravity and Nano Banana, and automate workflows with n8n.',
         'curriculum.m3.label': 'Month Three',
+        'curriculum.view_full': 'View Full Syllabus →',
+
+        // Student Projects
+        'projects.title': 'What You Will Build',
+        'projects.subtitle': "Students don't just watch videos—they build real, portfolio-ready projects.",
+        'projects.p1.title': 'AI Comic Book',
+        'projects.p1.desc': 'Write, illustrate, and layout a 5-page graphic novel using Kling AI for art and Gemini for dialogue.',
+        'projects.p2.title': 'Animated Trailer',
+        'projects.p2.desc': 'Direct a 60-second movie trailer with AI-generated voiceovers, sound effects, and motion animation.',
+        'projects.p3.title': 'AI Powered Web App',
+        'projects.p3.desc': 'Build a "Choose Your Own Adventure" game or a functional web app using Nano Banana & Antigravity.',
+
+        // FAQ Section (Home)
+        'faq.title_home': 'Common Questions',
+        'faq.view_all': 'View all FAQs →',
 
         // Social Proof
         'social.title': 'Loved by Parents & Kids',
@@ -124,7 +139,7 @@ const i18n = {
         'syllabus.subtitle': 'A week-by-week breakdown of our 3-month Live Academy program. Designed to take students from beginners to published creators.',
         'syllabus.m1.title': 'Month 1: AI Art & Storytelling',
         'syllabus.w1.title': 'Week 1: Introduction to Generative AI',
-        'syllabus.w1.desc': 'Understanding how LLMs and Image Generators work. Safety, ethics, and "prompt engineering" basics using Gemini and Midjourney.',
+        'syllabus.w1.desc': 'Understanding how LLMs and Image Generators work. Safety, ethics, and "prompt engineering" basics using Gemini and Kling AI.',
         'syllabus.w2.title': 'Week 2: Character Design & Consistency',
         'syllabus.w2.desc': 'Creating consistent characters for stories. Learning seed numbers, style references, and remixing.',
         'syllabus.w3.title': 'Week 3: World Building & Environments',
@@ -140,13 +155,13 @@ const i18n = {
         'syllabus.w7.desc': 'Using CapCut / Premiere to assemble clips, add transitions, and sync audio.',
         'syllabus.w8.title': 'Week 8: Project 2 — The Movie Trailer',
         'syllabus.w8.desc': '<strong>Deliverable:</strong> Produce a 60-second trailer for your story concept using animated AI assets.',
-        'syllabus.m3.title': 'Month 3: Coding & Portfolio',
-        'syllabus.w9.title': 'Week 9: Python Basics for AI',
-        'syllabus.w9.desc': 'Variables, loops, and functions. Using the OpenAI API to build a simple chatbot.',
-        'syllabus.w10.title': 'Week 10: Web Basics (HTML/CSS)',
-        'syllabus.w10.desc': 'Building a personal portfolio website to showcase your work.',
-        'syllabus.w11.title': 'Week 11: Integrating AI into Code',
-        'syllabus.w11.desc': 'Building a simple web game (e.g., "Choose Your Own Adventure") powered by AI logic.',
+        'syllabus.m3.title': 'Month 3: AI Apps & Automation',
+        'syllabus.w9.title': 'Week 9: AI Agents & No-Code Building',
+        'syllabus.w9.desc': 'Introduction to Nano Banana and Antigravity. Building complex apps without writing code from scratch.',
+        'syllabus.w10.title': 'Week 10: Automation with n8n',
+        'syllabus.w10.desc': 'Connecting AI tools together. Creating automated workflows to process data and content.',
+        'syllabus.w11.title': 'Week 11: Advanced App Logic',
+        'syllabus.w11.desc': 'Integrating ElevenLabs and Suno into your app logic for a rich multimedia experience.',
         'syllabus.w12.title': 'Week 12: Final Demo Day',
         'syllabus.w12.desc': '<strong>Deliverable:</strong> Present your final portfolio website and live project to parents and peers.',
 
@@ -245,10 +260,10 @@ const i18n = {
         'hero.float3': '🚀 Kurk tikras programėles',
 
         // Problem / Solution
-        'ps.problem_title': 'Mokyklos moko 2010-ųjų įgūdžių.',
+        'ps.problem_title': '❌ Mokyklos moko 2010-ųjų įgūdžių.',
         'ps.problem_desc': 'Pasenusios programos neparuošia vaikų AI valdomai ekonomikai, kurioje jie gyvens.',
-        'ps.solution_title': 'Web Genius moko 2030-ųjų įgūdžių.',
-        'ps.solution_desc': 'Generatyvinis AI (Gemini / ChatGPT), Python programavimas ir skaitmeninė etika — įgūdžiai, kurie svarbūs.',
+        'ps.solution_title': '✅ Web Genius moko 2030-ųjų įgūdžių.',
+        'ps.solution_desc': 'Generatyvinis AI (Gemini / Suno), AI Agentai (Antigravity) ir Automatizavimas (n8n) — įgūdžiai, kurie svarbūs.',
 
         // Two Paths
         'paths.title': 'Pasirink savo kelią',
@@ -290,9 +305,24 @@ const i18n = {
         'curriculum.m2.title': 'Video ir garso gamyba',
         'curriculum.m2.desc': 'Kurk animacinius trumpametražius su AI balso įrašais, redaguok vaizdo įrašus ir gamink originalų garso turinį.',
         'curriculum.m2.label': 'Antras mėnuo',
-        'curriculum.m3.title': 'Programavimas ir žaidimų kūrimas',
-        'curriculum.m3.desc': 'Rašyk tikrą Python kodą, projektuok tinklalapius ir kurk žaidimų elementus galutiniam portfolio projektui.',
+        'curriculum.m3.title': 'AI Programėlės ir Automatizavimas',
+        'curriculum.m3.desc': 'Kurk tikras programėles naudodamas AI agentus (Antigravity, Nano Banana) ir automatizuok procesus su n8n.',
         'curriculum.m3.label': 'Trečias mėnuo',
+        'curriculum.view_full': 'Žiūrėti pilną programą →',
+
+        // Student Projects
+        'projects.title': 'Ką Sukursite',
+        'projects.subtitle': 'Mokiniai ne tik žiūri video – jie kuria realius, portfolio vertus projektus.',
+        'projects.p1.title': 'AI Komiksų Knyga',
+        'projects.p1.desc': 'Parašykite, iliustruokite ir sumaketuokite 5 puslapių grafinį romaną naudodami Kling AI menui ir Gemini dialogams.',
+        'projects.p2.title': 'Animuotas Treileris',
+        'projects.p2.desc': 'Režisuokite 60 sekundžių filmo treilerį su AI sugeneruotais balsais, garso efektais ir judesio animacija.',
+        'projects.p3.title': 'AI Valdoma Web Programėlė',
+        'projects.p3.desc': 'Sukurk „Pasirink savo nuotykį“ žaidimą arba funkcinę web aplikaciją naudodamas Nano Banana ir Antigravity.',
+
+        // FAQ Section (Home)
+        'faq.title_home': 'Dažniausiai Užduodami Klausimai',
+        'faq.view_all': 'Žiūrėti visus DUK →',
 
         // Social Proof
         'social.title': 'Tėvų ir vaikų mėgstama',
@@ -344,7 +374,7 @@ const i18n = {
         'syllabus.subtitle': 'Mūsų 3 mėnesių Gyvosios Akademijos savaitinė apžvalga. Sukurta taip, kad pradedančiuosius paverstų publikuojamais kūrėjais.',
         'syllabus.m1.title': '1 Mėnuo: AI Menas ir Istorijų Kūrimas',
         'syllabus.w1.title': '1 Savaitė: Įvadas į Generatyvinį AI',
-        'syllabus.w1.desc': 'Supratimas, kaip veikia LLM ir vaizdų generatoriai. Saugumas, etika ir „prompt engineering“ pagrindai naudojant Gemini ir Midjourney.',
+        'syllabus.w1.desc': 'Supratimas, kaip veikia LLM ir vaizdų generatoriai. Saugumas, etika ir „prompt engineering“ pagrindai naudojant Gemini ir Kling AI.',
         'syllabus.w2.title': '2 Savaitė: Veikėjų Kūrimas ir Nuoseklumas',
         'syllabus.w2.desc': 'Nuoseklių veikėjų kūrimas istorijoms. Sėklų (seed) numerių, stiliaus nuorodų ir remiksavimo mokymasis.',
         'syllabus.w3.title': '3 Savaitė: Pasaulių Kūrimas ir Aplinka',
@@ -360,13 +390,13 @@ const i18n = {
         'syllabus.w7.desc': 'Naudojant CapCut / Premiere klipų sujungimui, perėjimų pridėjimui ir garso sinchronizavimui.',
         'syllabus.w8.title': '8 Savaitė: 2 Projektas — Filmo Treileris',
         'syllabus.w8.desc': '<strong>Rezultatas:</strong> Sukurti 60 sekundžių treilerį jūsų istorijos koncepcijai naudojant animuotus AI aktyvus.',
-        'syllabus.m3.title': '3 Mėnuo: Programavimas ir Portfolio',
-        'syllabus.w9.title': '9 Savaitė: Python Pagrindai AI',
-        'syllabus.w9.desc': 'Kintamieji, ciklai ir funkcijos. OpenAI API naudojimas paprasto pokalbių roboto kūrimui.',
-        'syllabus.w10.title': '10 Savaitė: Web Pagrindai (HTML/CSS)',
-        'syllabus.w10.desc': 'Asmeninės portfolio svetainės kūrimas darbų pristatymui.',
-        'syllabus.w11.title': '11 Savaitė: AI Integravimas į Kodą',
-        'syllabus.w11.desc': 'Paprasto žaidimo kūrimas (pvz., „Pasirink savo nuotykį“), paremto AI logika.',
+        'syllabus.m3.title': '3 Mėnuo: AI Programėlės ir Automatizavimas',
+        'syllabus.w9.title': '9 Savaitė: AI Agentai ir No-Code Kūryba',
+        'syllabus.w9.desc': 'Įvadas į Nano Banana ir Antigravity. Sudėtingų programėlių kūrimas nerašant kodo nuo nulio.',
+        'syllabus.w10.title': '10 Savaitė: Automatizavimas su n8n',
+        'syllabus.w10.desc': 'AI įrankių sujungimas. Automatizuotų procesų kūrimas duomenims ir turiniui apdoroti.',
+        'syllabus.w11.title': '11 Savaitė: Pažangi Programėlių Logika',
+        'syllabus.w11.desc': 'ElevenLabs ir Suno integravimas į programėlės logiką turtingai daugialypei patirčiai.',
         'syllabus.w12.title': '12 Savaitė: Finalinė Demo Diena',
         'syllabus.w12.desc': '<strong>Rezultatas:</strong> Pristatyti savo galutinę portfolio svetainę ir gyvą projektą tėvams ir bendraamžiams.',
 
@@ -608,6 +638,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (type === 'recurring') {
             if (titleEl) titleEl.innerText = currentLang === 'lt' ? 'Registracija į Kūrėjų Klubą' : 'Join the Creators Club';
             if (subEl) subEl.innerText = currentLang === 'lt' ? 'Savaitiniai užsiėmimai absolventams.' : 'Weekly sessions for academy graduates.';
+        } else if (type === 'explorer') {
+            if (titleEl) titleEl.innerText = currentLang === 'lt' ? 'Registruotis į Savarankiškus Kursus' : 'Register for Self-Paced Courses';
+            if (subEl) subEl.innerText = currentLang === 'lt' ? 'Gaukite prieigą prie video bibliotekos.' : 'Get access to our video library.';
         } else {
             if (titleEl) titleEl.innerText = i18n[currentLang]['modal.title'];
             if (subEl) subEl.innerText = i18n[currentLang]['modal.subtitle'];
@@ -620,7 +653,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (true) {
             try {
                 // Use the global getCohorts from supabase.js if available, or direct query
-                const { data: cohorts, error } = await window.supabase
+                const { data: cohorts, error } = await window.WebGeniusDB.supabase
                     .from('cohorts')
                     .select('*')
                     .or('status.eq.upcoming,status.eq.active')
@@ -716,6 +749,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Attach to Explorer Button
+    const explorerBtn = document.getElementById('btn-explorer');
+    if (explorerBtn) {
+        explorerBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Open modal with specific 'explorer' context if needed, or just 'fixed' for now
+            // The user prompt implied just wiring it up. 
+            // We'll pass 'explorer' to maybe customize title later or just treat as fixed.
+            openModal('explorer');
+        });
+    }
+
     // Also "Get Started" on Explorer card? The prompt says "Ateities kūrėjas" (Future Creator). 
     // Explorer is self-paced. Logic might differ. 
     // User request: "I want to add email forms for registering to the Ateities kūrėjas courses... when they want to register to the academy."
@@ -756,7 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const cohortId = document.getElementById('cohort').value;
 
             try {
-                const { error } = await window.supabase
+                const { error } = await window.WebGeniusDB.supabase
                     .from('course_registrations')
                     .insert({ email, cohort_id: cohortId });
 
