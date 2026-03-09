@@ -239,7 +239,8 @@ button {
   align-items: center;
   background: var(--off-white);
   overflow: hidden;
-  padding-top: 72px;
+  padding-top: calc(72px + var(--space-4xl));
+  padding-bottom: var(--space-4xl);
 }
 
 /* Decorative gradient orbs */
