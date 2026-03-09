@@ -1817,22 +1817,72 @@ async function loadRegistrations() {
 function renderRegistrations(registrations) {
   const tbody = document.getElementById('registrationsTableBody');
   if (!registrations.length) {
-    tbody.innerHTML = `<tr><td colspan="4" class="empty-state"><p>No leads yet. Share your website to get some!</p></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="empty-state"><p>No leads yet. Share your website to get some!</p></td></tr>`;
     return;
   }
 
   tbody.innerHTML = registrations.map(r => {
+    // Generate Status Badge
+    let statusBadge = '';
+    const s = r.status || 'new';
+    if (s === 'new') statusBadge = `<span class="status-badge" style="background:#fefce8;color:#a16207;border:1px solid #fef08a">New</span>`;
+    else if (s === 'contacted') statusBadge = `<span class="status-badge" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">Contacted</span>`;
+    else if (s === 'enrolled') statusBadge = `<span class="status-badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0">Enrolled</span>`;
+    else if (s === 'lost') statusBadge = `<span class="status-badge" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca">Lost</span>`;
+
+    // Notes Indicator
+    const hasNotes = (r.notes && r.notes.trim() !== '') ? '<span title="Has Notes" style="cursor:help;margin-left:5px">📝</span>' : '';
+
     return `
       <tr>
         <td class="primary-col">${esc(r.email)}</td>
         <td><span class="status-badge" style="background:var(--blue-50);color:var(--blue-700)">${esc(r.cohorts?.name || 'Any / Unknown')}</span></td>
         <td><div class="date-cell">${formatDate(r.created_at)}</div></td>
+        <td>${statusBadge}${hasNotes}</td>
         <td class="actions-cell">
-          <button class="btn-sm btn-edit" onclick="navigator.clipboard.writeText('${esc(r.email)}');showToast('Email copied!')">Copy Email</button>
+          <button class="btn-sm btn-edit" onclick="navigator.clipboard.writeText('${esc(r.email)}');showToast('Email copied!')">Copy</button>
+          <button class="btn-sm btn-edit" onclick="openRegistrationModal('${r.id}')">Edit</button>
         </td>
       </tr>
     `;
   }).join('');
+}
+
+function openRegistrationModal(id) {
+  const lead = registrationsCache.find(x => x.id === id);
+  if (!lead) return;
+
+  openModal(
+    'Edit Lead: ' + esc(lead.email),
+    `
+      <div class="form-group">
+        <label>Status</label>
+        <select id="mLeadStatus">
+          <option value="new" ${lead.status === 'new' ? 'selected' : ''}>New</option>
+          <option value="contacted" ${lead.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+          <option value="enrolled" ${lead.status === 'enrolled' ? 'selected' : ''}>Enrolled</option>
+          <option value="lost" ${lead.status === 'lost' ? 'selected' : ''}>Lost</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Internal Notes</label>
+        <textarea id="mLeadNotes" placeholder="e.g. Sent introductory email on Tuesday, waiting for reply...">${esc(lead.notes || '')}</textarea>
+      </div>
+    `,
+    async () => {
+      const payload = {
+        status: document.getElementById('mLeadStatus').value,
+        notes: document.getElementById('mLeadNotes').value.trim()
+      };
+
+      const { error } = await sb().from('course_registrations').update(payload).eq('id', id);
+      if (error) throw error;
+
+      showToast('Lead updated');
+      await loadRegistrations();
+      await loadRegistrationsBadge(); // Update the notification badge
+    }
+  );
 }
 
 function filterRegistrations(query) {
@@ -3067,14 +3117,18 @@ async function loadRegistrationsBadge() {
   try {
     const { count, error } = await sb()
       .from('course_registrations')
-      .select('id', { count: 'exact', head: true });
+      .select('id', { count: 'exact', head: true })
+      .or('status.eq.new,status.is.null');
+
+    const badge = document.getElementById('registrationsBadge');
+    if (!badge) return;
 
     if (!error && count > 0) {
-      const badge = document.getElementById('registrationsBadge');
-      if (badge) {
-        badge.textContent = count;
-        badge.style.display = 'inline-block';
-      }
+      badge.textContent = count;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+      badge.textContent = '0';
     }
   } catch (e) { /* ignore */ }
 }
