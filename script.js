@@ -126,6 +126,8 @@ const i18n = {
         // Modal
         'modal.title': 'Join the Live Academy',
         'modal.subtitle': 'Secure your spot in the next cohort.',
+        'modal.name_label': 'Your Full Name',
+        'modal.phone_label': 'Phone Number',
         'modal.email_label': 'Your Email Address',
         'modal.cohort_label': 'Select Cohort',
         'modal.select_placeholder': 'Loading cohorts...',
@@ -361,7 +363,9 @@ const i18n = {
         // Modal
         'modal.title': 'Prisijunk prie Gyvosios Akademijos',
         'modal.subtitle': 'Užsitikrink vietą kitoje grupėje.',
-        'modal.email_label': 'Jūsų el. pašto adresas',
+        'modal.name_label': 'Tavo vardas ir pavardė',
+        'modal.phone_label': 'Telefono numeris',
+        'modal.email_label': 'Tavo el. pašto adresas',
         'modal.cohort_label': 'Pasirinkite grupę',
         'modal.select_placeholder': 'Kraunamos grupės...',
         'modal.submit_btn': 'Baigti registraciją',
@@ -621,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Filter which buttons open the modal (specifically "Apply" or "Join" related, excluding nav anchors)
     // Actually, let's target specific buttons for clarity if possible, or check text content
-    // For now, attaching to all "Join Live Academy" or "Apply Now" buttons
+    // For now, attaching to all "Join the Live Academy" or "Apply Now" buttons
     // The HTML has `data-i18n` attributes we can use, or just class references if specific.
     // The hero buttons are: .btn-primary, .btn-secondary. The values are "Join the Live Academy" etc.
 
@@ -797,13 +801,15 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
             btn.innerHTML = '...';
 
-            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
             const cohortId = document.getElementById('cohort').value;
 
             try {
                 const { error } = await window.WebGeniusDB.supabase
                     .from('course_registrations')
-                    .insert({ email, cohort_id: cohortId });
+                    .insert({ name, phone, email, cohort_id: cohortId });
 
                 if (error) throw error;
 

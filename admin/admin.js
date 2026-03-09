@@ -1817,7 +1817,7 @@ async function loadRegistrations() {
 function renderRegistrations(registrations) {
   const tbody = document.getElementById('registrationsTableBody');
   if (!registrations.length) {
-    tbody.innerHTML = `<tr><td colspan="5" class="empty-state"><p>No leads yet. Share your website to get some!</p></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><p>No leads yet. Share your website to get some!</p></td></tr>`;
     return;
   }
 
@@ -1835,7 +1835,9 @@ function renderRegistrations(registrations) {
 
     return `
       <tr>
-        <td class="primary-col">${esc(r.email)}</td>
+        <td class="primary-col" style="font-weight:600">${esc(r.name || '—')}</td>
+        <td>${esc(r.phone || '—')}</td>
+        <td>${esc(r.email)}</td>
         <td><span class="status-badge" style="background:var(--blue-50);color:var(--blue-700)">${esc(r.cohorts?.name || 'Any / Unknown')}</span></td>
         <td><div class="date-cell">${formatDate(r.created_at)}</div></td>
         <td>${statusBadge}${hasNotes}</td>
@@ -1887,7 +1889,10 @@ function openRegistrationModal(id) {
 
 function filterRegistrations(query) {
   query = query.toLowerCase();
-  const filtered = registrationsCache.filter(r => r.email.toLowerCase().includes(query));
+  const filtered = registrationsCache.filter(r =>
+    r.email.toLowerCase().includes(query) ||
+    (r.name && r.name.toLowerCase().includes(query))
+  );
   window.paginators['registrationsPagination'].init(filtered);
 }
 
