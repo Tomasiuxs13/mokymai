@@ -13,10 +13,10 @@ const i18n = {
         'nav.reviews': 'Reviews',
         'nav.pricing': 'Pricing',
         'nav.cta': 'Join Live Academy',
-        'promo.text': '🔥 Spring 2026 Cohort: Only 8 spots left! <a href="#" class="nav-cta">Join now →</a>',
+        'promo.text': '🔥 Summer 2026 Cohort: Only 8 spots left! <a href="#" class="nav-cta">Join now →</a>',
 
         // Hero
-        'hero.badge': '🚀 Now enrolling — Spring 2026 Cohort',
+        'hero.badge': '🚀 Now enrolling — Summer 2026 Cohort',
         'hero.headline': 'Turn Screen Time into <span class="gradient-text">Superpowers.</span>',
         'hero.sub': "The world's first AI & Coding academy for kids. Start learning today; master the future in our Live Academy.",
         'hero.cta_primary': 'Join the Live Academy →',
@@ -251,10 +251,10 @@ const i18n = {
         'nav.reviews': 'Atsiliepimai',
         'nav.pricing': 'Kainos',
         'nav.cta': 'Prisijunk prie akademijos',
-        'promo.text': '🔥 2026 m. pavasario grupė: Liko tik 8 vietos! <a href="#" class="nav-cta">Prisijunk dabar →</a>',
+        'promo.text': '🔥 2026 m. vasaros grupė: Liko tik 8 vietos! <a href="#" class="nav-cta">Prisijunk dabar →</a>',
 
         // Hero
-        'hero.badge': '🚀 Registracija atvira — 2026 m. pavasario grupė',
+        'hero.badge': '🚀 Registracija atvira — 2026 m. vasaros grupė',
         'hero.headline': 'Paversk ekrano laiką <span class="gradient-text">supergaliomis.</span>',
         'hero.sub': 'Pirmoji pasaulyje AI ir programavimo akademija vaikams. Pradėk mokytis šiandien; įvaldyk ateitį mūsų gyvoje akademijoje.',
         'hero.cta_primary': 'Prisijunk prie akademijos →',
