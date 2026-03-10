@@ -816,6 +816,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (error) throw error;
 
+                // Meta Pixel Event Tracking
+                if (typeof fbq === 'function') {
+                    fbq('track', 'CompleteRegistration');
+                }
+
                 // Success
                 btn.innerHTML = i18n[currentLang]['modal.success'];
                 btn.classList.add('btn-success'); // semantic class if we had it, otherwise just text
