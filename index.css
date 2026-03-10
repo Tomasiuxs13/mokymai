@@ -22,7 +22,8 @@
   --gray-50: #F1F5F9;
   --gray-100: #E2E8F0;
   --gray-200: #CBD5E1;
-  --gray-400: #94A3B8;
+  --gray-300: #94A3B8;
+  --gray-400: #64748B;
   --gray-600: #475569;
   --gray-800: #1E293B;
   --gray-900: #0F172A;
@@ -1575,8 +1576,8 @@ details[open] summary::after {
 .form-group select {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
   font-family: var(--font-body), sans-serif;
   font-size: 1rem;
   background-color: var(--white);
