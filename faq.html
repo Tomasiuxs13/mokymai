@@ -8,55 +8,7 @@
     <link rel="stylesheet" href="index.css" />
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
-    <style>
-        details {
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-md);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
 
-        details[open] {
-            box-shadow: var(--shadow-md);
-            border-color: var(--blue-light);
-        }
-
-        summary {
-            padding: var(--space-md) var(--space-lg);
-            font-weight: 600;
-            cursor: pointer;
-            list-style: none;
-            position: relative;
-            color: var(--gray-900);
-        }
-
-        summary::-webkit-details-marker {
-            display: none;
-        }
-
-        summary::after {
-            content: '+';
-            position: absolute;
-            right: var(--space-lg);
-            color: var(--blue);
-            font-weight: 800;
-        }
-
-        details[open] summary::after {
-            content: '−';
-        }
-
-        .faq-body {
-            padding: 0 var(--space-lg) var(--space-lg);
-            color: var(--gray-600);
-            font-size: 0.95rem;
-            border-top: 1px solid var(--gray-50);
-            margin-top: var(--space-xs);
-            padding-top: var(--space-md);
-        }
-    </style>
 </head>
 
 <body>

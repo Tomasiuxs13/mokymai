@@ -81,9 +81,17 @@ function renderStructure() {
         const modEl = document.createElement('div');
         modEl.className = 'module-item';
         modEl.dataset.id = mod.id;
+        modEl.draggable = true;
+        modEl.ondragstart = window.handleModuleDragStart;
+        modEl.ondragover = window.handleModuleDragOver; // Allow dropping other modules here to reorder
+        modEl.ondrop = window.handleModuleDrop;
+
         modEl.innerHTML = `
       <div class="module-header">
-        <span>${esc(mod.title)}</span>
+        <div style="display:flex;align-items:center;gap:10px">
+            <span style="cursor:grab;color:var(--gray-400)">☰</span>
+            <span>${esc(mod.title)}</span>
+        </div>
         <div style="font-size:0.8rem">
             <button class="btn-sm" onclick="editModule('${mod.id}')">✏️</button>
             <button class="btn-sm btn-danger" onclick="deleteModule('${mod.id}')">🗑️</button>
@@ -233,11 +241,13 @@ function handleDragStart(e) {
 }
 
 function handleDragOver(e) {
+    if (!draggedItem) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
 }
 
 async function handleDrop(e) {
+    if (!draggedItem) return;
     e.preventDefault();
     const zone = e.currentTarget; // .module-lessons
     draggedItem.classList.remove('dragging');
@@ -377,4 +387,118 @@ window.deleteModule = async (id) => {
     // Move lessons in cache to unassigned
     lessonsCache.forEach(l => { if (l.module_id === id) l.module_id = null; });
     renderStructure();
+}
+
+/* ----------------------------------------------------------
+   Settings Modal
+   ---------------------------------------------------------- */
+window.openCourseSettings = function () {
+    if (!courseData) return;
+    document.getElementById('setCourseTitle').value = courseData.title || '';
+    document.getElementById('setCourseThumb').value = courseData.thumbnail || '';
+    document.getElementById('setCourseDesc').value = courseData.description || '';
+
+    document.getElementById('settingsModalOverlay').classList.add('open');
+}
+
+window.closeSettingsModal = function () {
+    document.getElementById('settingsModalOverlay').classList.remove('open');
+}
+
+window.saveCourseSettings = async function () {
+    const title = document.getElementById('setCourseTitle').value;
+    const thumbnail = document.getElementById('setCourseThumb').value;
+    const description = document.getElementById('setCourseDesc').value;
+
+    if (!title) return alert('Title is required');
+
+    const sb = window.WebGeniusDB.supabase;
+    const { error } = await sb.from('courses').update({
+        title, thumbnail, description, updated_at: new Date().toISOString()
+    }).eq('id', courseId);
+
+    if (error) {
+        alert('Error saving settings: ' + error.message);
+        return;
+    }
+
+    // Update local data
+    courseData.title = title;
+    courseData.thumbnail = thumbnail;
+    courseData.description = description;
+
+    document.getElementById('courseNameTitle').innerText = title;
+    document.title = `Builder: ${title}`;
+
+    closeSettingsModal();
+}
+
+/* ----------------------------------------------------------
+   Module Drag & Drop
+   ---------------------------------------------------------- */
+let draggedModule = null;
+
+window.handleModuleDragStart = function (e) {
+    draggedModule = e.currentTarget;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', draggedModule.dataset.id);
+    draggedModule.classList.add('dragging');
+}
+
+window.handleModuleDragOver = function (e) {
+    if (!draggedModule) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const container = document.getElementById('courseStructure');
+    const afterElement = getDragAfterElement(container, e.clientY);
+    if (afterElement == null) {
+        container.appendChild(draggedModule);
+    } else {
+        container.insertBefore(draggedModule, afterElement);
+    }
+}
+
+window.handleModuleDrop = async function (e) {
+    if (!draggedModule) return;
+    e.preventDefault();
+    draggedModule.classList.remove('dragging');
+    draggedModule = null; // Clear it
+
+    // Save new order
+    const container = document.getElementById('courseStructure');
+    const modulesResponse = [...container.querySelectorAll('.module-item')];
+
+    // Filter out unassigned if present (it shouldn't be draggable usually, but let's be safe)
+    const validModules = modulesResponse.filter(el => el.dataset.id && el.dataset.id !== 'undefined');
+
+    // Update cache order
+    const newOrderIds = validModules.map(el => el.dataset.id);
+
+    // Optimistic update
+    const updates = newOrderIds.map((id, index) => ({
+        id,
+        sort_order: index,
+        updated_at: new Date().toISOString()
+    }));
+
+    const sb = window.WebGeniusDB.supabase;
+    await sb.from('modules').upsert(updates);
+
+    // Update local cache sort
+    modulesCache.sort((a, b) => newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id));
+}
+
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.module-item:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }

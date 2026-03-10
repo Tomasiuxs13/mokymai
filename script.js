@@ -13,6 +13,7 @@ const i18n = {
         'nav.reviews': 'Reviews',
         'nav.pricing': 'Pricing',
         'nav.cta': 'Join Live Academy',
+        'promo.text': '🔥 Spring 2026 Cohort: Only 8 spots left! <a href="#" class="nav-cta">Join now →</a>',
 
         // Hero
         'hero.badge': '🚀 Now enrolling — Spring 2026 Cohort',
@@ -250,6 +251,7 @@ const i18n = {
         'nav.reviews': 'Atsiliepimai',
         'nav.pricing': 'Kainos',
         'nav.cta': 'Prisijunk prie akademijos',
+        'promo.text': '🔥 2026 m. pavasario grupė: Liko tik 8 vietos! <a href="#" class="nav-cta">Prisijunk dabar →</a>',
 
         // Hero
         'hero.badge': '🚀 Registracija atvira — 2026 m. pavasario grupė',
@@ -736,12 +738,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Attach to specific elements
-    // Attach to Live Academy Buttons (Generic)
-    document.querySelectorAll('.nav-cta, .hero-buttons .btn-primary, .path-card.recommended .btn-primary, .cta-banner .btn-white').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+    // Attach to Live Academy Buttons (using event delegation for dynamic links like the promo banner)
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('.nav-cta, .hero-buttons .btn-primary, .path-card.recommended .btn-primary, .cta-banner .btn-white');
+        if (target) {
             e.preventDefault();
             openModal('fixed');
-        });
+        }
     });
 
     // Attach to Creators Club Button (Specific)

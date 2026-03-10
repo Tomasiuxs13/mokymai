@@ -144,7 +144,8 @@ button {
    ============================================================ */
 .navbar {
   position: fixed;
-  top: 0;
+  top: 40px;
+  /* Shifted down to accommodate banner */
   left: 0;
   width: 100%;
   z-index: 1000;
@@ -235,12 +236,12 @@ button {
    ============================================================ */
 .hero {
   position: relative;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   background: var(--off-white);
   overflow: hidden;
-  padding-top: calc(72px + var(--space-4xl));
+  padding-top: calc(72px + 40px + var(--space-4xl));
+  /* Account for banner + navbar */
   padding-bottom: var(--space-4xl);
 }
 
@@ -1636,6 +1637,57 @@ details[open] summary::after {
 .required {
   color: #ef4444;
   margin-left: 2px;
+}
+
+/* Promotional Banner */
+.promo-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  color: white;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.promo-banner p {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.promo-banner .nav-cta {
+  color: white !important;
+  text-decoration: underline !important;
+  margin-left: 8px;
+  font-weight: 700;
+  padding: 0;
+  background: transparent;
+  display: inline-block;
+  cursor: pointer;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .promo-banner {
+    height: auto;
+    padding: 8px 1rem;
+    font-size: 0.8rem;
+  }
+
+  .navbar {
+    top: 52px;
+    /* Adjusted for wrapping text on mobile if needed */
+  }
+
+  .hero {
+    padding-top: calc(72px + 52px + var(--space-2xl));
+  }
 }
 
 .optional {
