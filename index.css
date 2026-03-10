@@ -1631,3 +1631,16 @@ details[open] summary::after {
   transform: scale(1.02) translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
+
+/* Form Label Indicators */
+.required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.optional {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--gray-400);
+  margin-left: 4px;
+}
