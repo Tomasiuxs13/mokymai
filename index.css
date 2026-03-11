@@ -327,14 +327,14 @@ button {
 .hero-cta-group {
   display: inline-flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .hero-buttons {
   display: flex;
   gap: var(--space-md);
   flex-wrap: wrap;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
 }
 
 /* Buttons */
@@ -1358,8 +1358,24 @@ details[open] summary::after {
     margin-right: auto;
   }
 
+  .hero-cta-group {
+    align-items: center;
+  }
+
   .hero-buttons {
     justify-content: center;
+  }
+
+  .hero-trust {
+    align-items: center;
+  }
+
+  .trust-stars {
+    text-align: center;
+  }
+
+  .hero-trust p {
+    text-align: center;
   }
 
   .hero-image {
@@ -1776,8 +1792,8 @@ details[open] summary::after {
 .hero-trust {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .trust-stars {
@@ -1791,6 +1807,7 @@ details[open] summary::after {
   font-size: 0.9rem;
   color: var(--gray-600);
   margin: 0;
+  text-align: left;
 }
 
 .hero-trust a {
