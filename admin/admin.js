@@ -3519,3 +3519,38 @@ async function deleteSession(id) {
   showToast('Session deleted');
   await loadSchedule();
 }
+
+/* ----------------------------------------------------------
+   MOBILE SIDEBAR TOGGLE
+   ---------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    
+    if (sidebar && toggleBtn) {
+        // Toggle sidebar when clicking the hamburger icon
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent immediate closing
+            sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar when clicking outside of it on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 968 && sidebar.classList.contains('open')) {
+                if (!sidebar.contains(e.target) && e.target !== toggleBtn) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+
+        // Close sidebar when clicking a navigation link on mobile
+        const navLinks = sidebar.querySelectorAll('.sidebar-nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 968) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        });
+    }
+});

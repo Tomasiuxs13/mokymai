@@ -848,3 +848,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+
+// --- MOBILE STICKY CTA SCRIPT ---
+document.addEventListener("DOMContentLoaded", () => {
+  const stickyCta = document.getElementById("mobileStickyCta");
+  const heroSection = document.getElementById("hero");
+  const pathsSection = document.getElementById("paths");
+
+  if (stickyCta && heroSection && pathsSection) {
+    const handleScroll = () => {
+      // Only run on mobile/tablet
+      if (window.innerWidth <= 768) {
+        // Show CTA after scrolling past the hero section
+        const heroBottom = heroSection.getBoundingClientRect().bottom;
+        
+        // Hide CTA when we reach the actual pricing area to avoid double buttons
+        const pathsTop = pathsSection.getBoundingClientRect().top;
+        const pathsBottom = pathsSection.getBoundingClientRect().bottom;
+        
+        // We want it visible between the hero and the pricing cards (or after them)
+         if (heroBottom < 0 && (pathsTop > window.innerHeight || pathsBottom < 0)) {
+          stickyCta.classList.add("visible");
+        } else {
+          stickyCta.classList.remove("visible");
+        }
+      } else {
+        stickyCta.classList.remove("visible");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+  }
+});

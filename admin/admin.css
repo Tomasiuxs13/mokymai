@@ -389,6 +389,8 @@
     border: 1px solid var(--gray-100);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
+    overflow-x: auto;
+    /* Enable horizontal scroll on small screens */
 }
 
 .data-table {
@@ -1196,6 +1198,36 @@
 
     .data-table-wrap {
         overflow-x: auto;
+    }
+
+    .modal {
+        width: calc(100% - 2rem);
+        margin: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+        text-align: center;
+    }
+
+    .progress-courses-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-panel {
+        width: 100%;
     }
 }
 
