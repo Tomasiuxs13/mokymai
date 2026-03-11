@@ -1839,6 +1839,7 @@ function renderRegistrations(registrations) {
         <td>${esc(r.phone || '—')}</td>
         <td>${esc(r.email)}</td>
         <td><span class="status-badge" style="background:var(--primary-100);color:var(--primary-700);text-transform:capitalize">${esc(r.product_type || 'creator')}</span></td>
+        <td>${esc(r.children_count || '—')}</td>
         <td><span class="status-badge" style="background:var(--blue-50);color:var(--blue-700)">${esc(r.cohorts?.name || 'Any / Unknown')}</span></td>
         <td><div class="date-cell">${formatDate(r.created_at)}</div></td>
         <td>${statusBadge}${hasNotes}</td>
@@ -1866,6 +1867,10 @@ function openRegistrationModal(id) {
           <option value="enrolled" ${lead.status === 'enrolled' ? 'selected' : ''}>Enrolled</option>
           <option value="lost" ${lead.status === 'lost' ? 'selected' : ''}>Lost</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label>Children in Family</label>
+        <input type="text" id="mLeadChildren" value="${esc(lead.children_count || '')}" disabled />
       </div>
       <div class="form-group">
         <label>Internal Notes</label>

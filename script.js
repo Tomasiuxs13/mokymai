@@ -133,6 +133,7 @@ const i18n = {
         'modal.phone_label': 'Phone Number',
         'modal.email_label': 'Your Email Address',
         'modal.cohort_label': 'Select Cohort',
+        'modal.children_count_label': 'Number of Children (in family)',
         'modal.select_placeholder': 'Loading cohorts...',
         'modal.submit_btn': 'Complete Registration',
         'modal.footer_text': "We'll send next steps to your email. No payment required today.",
@@ -373,6 +374,7 @@ const i18n = {
         'modal.phone_label': 'Telefono numeris',
         'modal.email_label': 'Tavo el. pašto adresas',
         'modal.cohort_label': 'Pasirinkite grupę',
+        'modal.children_count_label': 'Vaikų skaičius (šeimoje)',
         'modal.select_placeholder': 'Kraunamos grupės...',
         'modal.submit_btn': 'Baigti registraciją',
         'modal.footer_text': 'Atsiųsime tolimesnius žingsnius el. paštu. Šiandien mokėti nereikia.',
@@ -826,10 +828,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const cohortId = document.getElementById('cohort').value || null;
             const productType = document.getElementById('productType') ? document.getElementById('productType').value : 'fixed';
 
+            const childrenCount = document.getElementById('childrenCount') ? document.getElementById('childrenCount').value : null;
+
             try {
                 const { error } = await window.WebGeniusDB.supabase
                     .from('course_registrations')
-                    .insert({ name, phone, email, cohort_id: cohortId, product_type: productType });
+                    .insert({ name, phone, email, cohort_id: cohortId, product_type: productType, children_count: childrenCount });
 
                 if (error) throw error;
 
