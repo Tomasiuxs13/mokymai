@@ -2,32 +2,52 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://webgenius.lt/</loc>
-    <lastmod>2026-02-17</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://webgenius.lt/privacy.html</loc>
-    <lastmod>2026-02-17</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://webgenius.lt/terms.html</loc>
-    <lastmod>2026-02-17</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://webgenius.lt/cookies.html</loc>
-    <lastmod>2026-02-17</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://webgenius.lt/syllabus.html</loc>
-    <lastmod>2026-02-17</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <priority>0.8</priority>
   </url>
    <url>
     <loc>https://webgenius.lt/faq.html</loc>
-    <lastmod>2026-02-17</lastmod>
+    <lastmod>2026-03-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://webgenius.lt/blog/index.html</loc>
+    <lastmod>2026-03-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://webgenius.lt/blog/articles/is-ai-safe-for-kids.html</loc>
+    <lastmod>2026-03-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://webgenius.lt/blog/articles/prompt-engineering-new-literacy.html</loc>
+    <lastmod>2026-03-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://webgenius.lt/blog/articles/top-3-ai-tools-for-kids.html</loc>
+    <lastmod>2026-03-11</lastmod>
     <priority>0.7</priority>
   </url>
 </urlset>

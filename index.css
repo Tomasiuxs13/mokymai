@@ -324,21 +324,31 @@ button {
   max-width: 480px;
 }
 
+.hero-cta-group {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .hero-buttons {
   display: flex;
   gap: var(--space-md);
   flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
 }
 
 /* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: .5rem;
   padding: .85rem 1.8rem;
   border-radius: 50px;
   font-weight: 600;
   font-size: 1rem;
+  line-height: 1.2;
+  text-align: center;
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
@@ -530,9 +540,13 @@ button {
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, .8);
   border-radius: var(--radius-lg);
-  padding: var(--space-2xl);
+  padding: var(--space-xl);
   box-shadow: var(--shadow-md);
   transition: transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .path-card:hover {
@@ -568,7 +582,7 @@ button {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  margin-bottom: var(--space-lg);
+  margin: 0 auto var(--space-lg);
 }
 
 .path-card:first-child .card-icon {
@@ -585,16 +599,26 @@ button {
   font-size: 1.35rem;
   color: var(--gray-900);
   margin-bottom: var(--space-xs);
+  text-align: center;
 }
 
 .path-card .card-subtitle {
   font-size: .95rem;
   color: var(--gray-400);
   margin-bottom: var(--space-lg);
+  min-height: 2.8rem;
+  /* Helps align buttons if subtitles vary in length */
+}
+
+.path-card .btn {
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: var(--space-sm);
 }
 
 .path-card .card-features {
   margin-bottom: var(--space-xl);
+  text-align: left;
 }
 
 .path-card .card-features li {
@@ -620,6 +644,7 @@ button {
   font-size: 1.5rem;
   color: var(--gray-900);
   margin-bottom: var(--space-lg);
+  text-align: center;
 }
 
 .path-card .card-price span {
@@ -1607,6 +1632,34 @@ details[open] summary::after {
 }
 
 /* ============================================================
+   10. MOBILE STICKY CTA
+   ============================================================ */
+.mobile-sticky-cta {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--white);
+  padding: 12px var(--space-lg);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
+  z-index: 998;
+  /* Just below WhatsApp */
+  border-top: 1px solid var(--gray-100);
+}
+
+.mobile-sticky-cta.visible {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .whatsapp-float {
+    bottom: 80px;
+    /* Push up when sticky CTA is visible */
+  }
+}
+
+/* ============================================================
    9. ANIMATIONS
    ============================================================ */
 
@@ -1721,7 +1774,6 @@ details[open] summary::after {
 
 /* CRO Additions */
 .hero-trust {
-  margin-top: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1742,7 +1794,7 @@ details[open] summary::after {
 }
 
 .hero-trust a {
-  color: var(--primary);
+  color: var(--blue);
   text-decoration: underline;
   font-weight: 500;
 }
@@ -1759,6 +1811,29 @@ details[open] summary::after {
   font-size: 0.95rem;
   text-align: center;
   border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.guarantee-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  background: var(--off-white);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+}
+
+.guarantee-text {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  margin-top: var(--space-sm);
 }
 
 @media (max-width: 480px) {

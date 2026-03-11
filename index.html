@@ -61,7 +61,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="index.css?v=7" />
+  <link rel="stylesheet" href="index.css?v=8" />
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
 
@@ -152,13 +152,15 @@
           <h1 data-i18n="hero.headline">Turn Screen Time into <span class="gradient-text">Superpowers.</span></h1>
           <p data-i18n="hero.sub">The world's first AI &amp; Coding academy for kids. Start learning today; master the
             future in our Live Academy.</p>
-          <div class="hero-buttons">
-            <a href="#paths" class="btn btn-primary" data-i18n="hero.cta_primary">Join the Live Academy →</a>
-            <a href="#paths" class="btn btn-secondary" data-i18n="hero.cta_secondary">Explore Self-Paced Courses</a>
-          </div>
-          <div class="hero-trust">
-            <div class="trust-stars">★★★★★</div>
-            <p data-i18n="hero.trust_text">Trusted by parents worldwide. <a href="#reviews">Read reviews</a></p>
+          <div class="hero-cta-group">
+            <div class="hero-buttons">
+              <a href="#paths" class="btn btn-primary" data-i18n="hero.cta_primary">Join the Live Academy →</a>
+              <a href="#paths" class="btn btn-secondary" data-i18n="hero.cta_secondary">Explore Self-Paced Courses</a>
+            </div>
+            <div class="hero-trust">
+              <div class="trust-stars">★★★★★</div>
+              <p data-i18n="hero.trust_text">Trusted by parents worldwide. <a href="#reviews">Read reviews</a></p>
+            </div>
           </div>
         </div>
         <div class="hero-image reveal">
@@ -244,10 +246,9 @@
             <p class="price-subtext"
               style="font-size: 0.85rem; color: var(--gray-500); margin-top: -10px; margin-bottom: 15px; text-align: center;">
               Lifetime Access</p>
-            <a href="#" class="btn btn-secondary" id="btn-explorer"
-              style="width:100%;justify-content:center;margin-bottom:var(--space-sm);"
-              data-i18n="paths.explorer.cta">Start Exploring Risk-Free →</a>
-            <div class="guarantee-text" style="text-align: center; font-size: 0.8rem; color: var(--gray-500);">
+            <a href="#" class="btn btn-secondary" id="btn-explorer" data-i18n="paths.explorer.cta">Start Exploring
+              Risk-Free →</a>
+            <div class="guarantee-text">
               14-Day Money-Back Guarantee
             </div>
           </div>
@@ -269,10 +270,8 @@
             <p class="price-subtext"
               style="font-size: 0.85rem; color: var(--gray-500); margin-top: -10px; margin-bottom: 15px; text-align: center;">
               Billed for 3 months (Total: $747)</p>
-            <a href="#" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:var(--space-sm);"
-              data-i18n="paths.creator.cta">Apply Now (Limited Spots)</a>
-            <div class="guarantee-badge"
-              style="display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; font-weight: 500; color: var(--gray-600); background: var(--off-white); padding: 8px; border-radius: 6px;">
+            <a href="#" class="btn btn-primary" data-i18n="paths.creator.cta">Apply Now (Limited Spots)</a>
+            <div class="guarantee-badge">
               <span>🛡️</span> 14-Day 100% Money-Back Guarantee
             </div>
           </div>
@@ -289,8 +288,7 @@
               <li data-i18n="paths.recurring.f4">Pay per month or semester</li>
             </ul>
             <div class="card-price" data-i18n="paths.recurring.price">$120 <span>/ month</span></div>
-            <a href="#" class="btn btn-secondary" id="btn-recurring" style="width:100%;justify-content:center;"
-              data-i18n="paths.recurring.cta">Join Waitlist</a>
+            <a href="#" class="btn btn-secondary" id="btn-recurring" data-i18n="paths.recurring.cta">Join Waitlist</a>
           </div>
         </div>
       </div>
@@ -646,6 +644,7 @@
       <div class="modal-urgency" data-i18n="modal.urgency_text">⏳ Spots for the Summer 2026 Cohort are filling up fast!
       </div>
       <form class="modal-form" id="regForm">
+        <input type="hidden" id="productType" name="productType" value="fixed">
         <div class="form-group">
           <label id="lblName" for="name" data-i18n="modal.name_label">Full Name <span class="required">*</span></label>
           <input type="text" id="name" name="name" required placeholder="John Doe">
@@ -663,7 +662,7 @@
           <input type="email" id="email" name="email" required placeholder="test@gmail.com">
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="cohortGroup">
           <label for="cohort" data-i18n="modal.cohort_label">Select Cohort <span class="required">*</span></label>
           <select id="cohort" name="cohort" required>
             <option value="" disabled selected data-i18n="modal.select_placeholder">Loading cohorts...</option>

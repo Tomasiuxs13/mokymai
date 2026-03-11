@@ -641,6 +641,18 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.classList.add('active');
         document.body.style.overflow = 'hidden'; // prevent background scrolling
 
+        const productTypeInput = document.getElementById('productType');
+        if (productTypeInput) productTypeInput.value = type;
+
+        const cohortGroup = document.getElementById('cohortGroup');
+        if (type === 'explorer') {
+            if (cohortGroup) cohortGroup.style.display = 'none';
+            if (cohortSelect) cohortSelect.removeAttribute('required');
+        } else {
+            if (cohortGroup) cohortGroup.style.display = 'block';
+            if (cohortSelect) cohortSelect.setAttribute('required', 'required');
+        }
+
         // Update Modal Title based on type
         const titleEl = modal.querySelector('h3[data-i18n="modal.title"]');
         const subEl = modal.querySelector('p[data-i18n="modal.subtitle"]');
@@ -811,12 +823,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = document.getElementById('name').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const email = document.getElementById('email').value.trim();
-            const cohortId = document.getElementById('cohort').value;
+            const cohortId = document.getElementById('cohort').value || null;
+            const productType = document.getElementById('productType') ? document.getElementById('productType').value : 'fixed';
 
             try {
                 const { error } = await window.WebGeniusDB.supabase
                     .from('course_registrations')
-                    .insert({ name, phone, email, cohort_id: cohortId });
+                    .insert({ name, phone, email, cohort_id: cohortId, product_type: productType });
 
                 if (error) throw error;
 
@@ -852,33 +865,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- MOBILE STICKY CTA SCRIPT ---
 document.addEventListener("DOMContentLoaded", () => {
-  const stickyCta = document.getElementById("mobileStickyCta");
-  const heroSection = document.getElementById("hero");
-  const pathsSection = document.getElementById("paths");
+    const stickyCta = document.getElementById("mobileStickyCta");
+    const heroSection = document.getElementById("hero");
+    const pathsSection = document.getElementById("paths");
 
-  if (stickyCta && heroSection && pathsSection) {
-    const handleScroll = () => {
-      // Only run on mobile/tablet
-      if (window.innerWidth <= 768) {
-        // Show CTA after scrolling past the hero section
-        const heroBottom = heroSection.getBoundingClientRect().bottom;
-        
-        // Hide CTA when we reach the actual pricing area to avoid double buttons
-        const pathsTop = pathsSection.getBoundingClientRect().top;
-        const pathsBottom = pathsSection.getBoundingClientRect().bottom;
-        
-        // We want it visible between the hero and the pricing cards (or after them)
-         if (heroBottom < 0 && (pathsTop > window.innerHeight || pathsBottom < 0)) {
-          stickyCta.classList.add("visible");
-        } else {
-          stickyCta.classList.remove("visible");
-        }
-      } else {
-        stickyCta.classList.remove("visible");
-      }
-    };
+    if (stickyCta && heroSection && pathsSection) {
+        const handleScroll = () => {
+            // Only run on mobile/tablet
+            if (window.innerWidth <= 768) {
+                // Show CTA after scrolling past the hero section
+                const heroBottom = heroSection.getBoundingClientRect().bottom;
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-  }
+                // Hide CTA when we reach the actual pricing area to avoid double buttons
+                const pathsTop = pathsSection.getBoundingClientRect().top;
+                const pathsBottom = pathsSection.getBoundingClientRect().bottom;
+
+                // We want it visible between the hero and the pricing cards (or after them)
+                if (heroBottom < 0 && (pathsTop > window.innerHeight || pathsBottom < 0)) {
+                    stickyCta.classList.add("visible");
+                } else {
+                    stickyCta.classList.remove("visible");
+                }
+            } else {
+                stickyCta.classList.remove("visible");
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        window.addEventListener("resize", handleScroll);
+    }
 });

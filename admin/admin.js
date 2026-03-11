@@ -1817,7 +1817,7 @@ async function loadRegistrations() {
 function renderRegistrations(registrations) {
   const tbody = document.getElementById('registrationsTableBody');
   if (!registrations.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="empty-state"><p>No leads yet. Share your website to get some!</p></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state"><p>No leads yet. Share your website to get some!</p></td></tr>`;
     return;
   }
 
@@ -1838,6 +1838,7 @@ function renderRegistrations(registrations) {
         <td class="primary-col" style="font-weight:600">${esc(r.name || '—')}</td>
         <td>${esc(r.phone || '—')}</td>
         <td>${esc(r.email)}</td>
+        <td><span class="status-badge" style="background:var(--primary-100);color:var(--primary-700);text-transform:capitalize">${esc(r.product_type || 'creator')}</span></td>
         <td><span class="status-badge" style="background:var(--blue-50);color:var(--blue-700)">${esc(r.cohorts?.name || 'Any / Unknown')}</span></td>
         <td><div class="date-cell">${formatDate(r.created_at)}</div></td>
         <td>${statusBadge}${hasNotes}</td>
@@ -3524,33 +3525,33 @@ async function deleteSession(id) {
    MOBILE SIDEBAR TOGGLE
    ---------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.querySelector('.sidebar');
-    const toggleBtn = document.getElementById('sidebarToggle');
-    
-    if (sidebar && toggleBtn) {
-        // Toggle sidebar when clicking the hamburger icon
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent immediate closing
-            sidebar.classList.toggle('open');
-        });
+  const sidebar = document.querySelector('.sidebar');
+  const toggleBtn = document.getElementById('sidebarToggle');
 
-        // Close sidebar when clicking outside of it on mobile
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 968 && sidebar.classList.contains('open')) {
-                if (!sidebar.contains(e.target) && e.target !== toggleBtn) {
-                    sidebar.classList.remove('open');
-                }
-            }
-        });
+  if (sidebar && toggleBtn) {
+    // Toggle sidebar when clicking the hamburger icon
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent immediate closing
+      sidebar.classList.toggle('open');
+    });
 
-        // Close sidebar when clicking a navigation link on mobile
-        const navLinks = sidebar.querySelectorAll('.sidebar-nav a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 968) {
-                    sidebar.classList.remove('open');
-                }
-            });
-        });
-    }
+    // Close sidebar when clicking outside of it on mobile
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 968 && sidebar.classList.contains('open')) {
+        if (!sidebar.contains(e.target) && e.target !== toggleBtn) {
+          sidebar.classList.remove('open');
+        }
+      }
+    });
+
+    // Close sidebar when clicking a navigation link on mobile
+    const navLinks = sidebar.querySelectorAll('.sidebar-nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 968) {
+          sidebar.classList.remove('open');
+        }
+      });
+    });
+  }
 });

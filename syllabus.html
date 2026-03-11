@@ -52,6 +52,13 @@
 </head>
 
 <body>
+    <!-- PROMO BANNER -->
+    <div class="promo-banner" id="promoBanner">
+        <div class="container">
+            <p data-i18n="promo.text">🔥 Summer 2026 Cohort: Only 8 spots left! <a href="#" class="nav-cta">Join now
+                    →</a></p>
+        </div>
+    </div>
 
     <!-- NAVIGATION -->
     <nav class="navbar" id="navbar">
@@ -78,7 +85,8 @@
     </nav>
 
     <!-- PAGE HEADER -->
-    <header class="section-padding" style="background:var(--off-white);padding-bottom:var(--space-xl)">
+    <header class="section-padding"
+        style="background:var(--off-white);padding-top:calc(72px + 40px + var(--space-3xl));padding-bottom:var(--space-2xl)">
         <div class="container" style="text-align:center">
             <h1 class="reveal" data-i18n="syllabus.title"
                 style="font-family:var(--font-heading);font-weight:800;font-size:2.5rem;color:var(--gray-900);margin-bottom:var(--space-sm)">
@@ -97,136 +105,204 @@
         <div class="container" style="max-width:800px">
 
             <!-- Month 1 -->
-            <div class="reveal" style="margin-bottom:var(--space-3xl)">
-                <h2 data-i18n="syllabus.m1.title"
-                    style="font-family:var(--font-heading);color:var(--blue);border-bottom:2px solid var(--gray-100);padding-bottom:var(--space-sm);margin-bottom:var(--space-lg)">
-                    Month 1: AI Art & Storytelling</h2>
+            <div class="reveal"
+                style="margin-bottom:var(--space-3xl); background:white; padding:var(--space-2xl); border-radius:var(--radius-xl); box-shadow:var(--shadow-md); border:1px solid var(--gray-100)">
+                <div style="display:flex; align-items:center; gap:var(--space-md); margin-bottom:var(--space-lg)">
+                    <span
+                        style="font-size:2rem; background:rgba(37,99,235,0.1); padding:0.8rem; border-radius:var(--radius-md)">🎨</span>
+                    <h2 data-i18n="syllabus.m1.title"
+                        style="font-family:var(--font-heading); color:var(--gray-900); font-size:1.75rem; font-weight:800; margin:0">
+                        Month 1: AI Art & Storytelling</h2>
+                </div>
 
-                <div style="display:grid;gap:var(--space-lg)">
-                    <div>
-                        <h3 data-i18n="syllabus.w1.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week 1:
-                            Generating Magic with Words</h3>
-                        <p data-i18n="syllabus.w1.desc" style="color:var(--gray-600)">Your child will generate their
-                            first beautiful piece of AI art and learn exactly how to "talk" to AI safely and effectively
-                            using Gemini and Kling AI.</p>
-                    </div>
-                    <div>
-                        <h3 data-i18n="syllabus.w2.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week 2:
-                            Designing Custom Characters</h3>
-                        <p data-i18n="syllabus.w2.desc" style="color:var(--gray-600)">They'll invent a unique hero or
-                            villain and learn the secret to keeping their character looking exactly the same across
-                            different scenes and styles.</p>
-                    </div>
-                    <div>
-                        <h3 data-i18n="syllabus.w3.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week 3:
-                            Building Entire Worlds</h3>
-                        <p data-i18n="syllabus.w3.desc" style="color:var(--gray-600)">From cyberpunk cities to magical
-                            forests, students will generate stunning backdrops and environments to set the stage for
-                            their story.</p>
-                    </div>
-                    <div>
+                <div
+                    style="display:grid; gap:var(--space-xl); border-left:2px solid var(--gray-100); padding-left:var(--space-lg); margin-left:1.5rem">
+                    <div style="position:relative">
                         <div
-                            style="background:var(--blue-light); border-left: 4px solid var(--blue); padding: var(--space-md); border-radius: 8px; margin-top: var(--space-sm);">
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--blue); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w1.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 1: Generating Magic with Words</h3>
+                        <p data-i18n="syllabus.w1.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">Your child will generate
+                            their first beautiful piece of AI art and learn exactly how to "talk" to AI safely and
+                            effectively using Gemini and Kling AI.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--blue); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w2.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 2: Designing Custom Characters</h3>
+                        <p data-i18n="syllabus.w2.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">They'll invent a unique
+                            hero or villain and learn the secret to keeping their character looking exactly the same
+                            across different scenes and styles.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--blue); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w3.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 3: Building Entire Worlds</h3>
+                        <p data-i18n="syllabus.w3.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">From cyberpunk cities to
+                            magical forests, students will generate stunning backdrops and environments to set the stage
+                            for their story.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="background:var(--gradient-soft); border-radius:var(--radius-lg); padding:var(--space-lg); border:1px solid rgba(37,99,235,0.1)">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                                <span style="font-size: 1.5rem;">🎨</span>
+                                <span style="font-size: 1.25rem;">🏆</span>
                                 <h3 data-i18n="syllabus.w4.title"
-                                    style="font-weight:700; color: var(--blue-dark); margin: 0;">Portfolio Checkpoint:
-                                    The AI Graphic Novel</h3>
+                                    style="font-weight:800; color: var(--blue); margin: 0; font-size:1rem; text-transform:uppercase; letter-spacing:0.04em">
+                                    Portfolio Checkpoint: The AI Graphic Novel</h3>
                             </div>
-                            <p data-i18n="syllabus.w4.desc" style="color:var(--gray-800); margin: 0; line-height: 1.5;">
+                            <p data-i18n="syllabus.w4.desc"
+                                style="color:var(--gray-800); margin: 0; line-height: 1.5; font-size:0.95rem">
                                 <strong>Deliverable:</strong> Kids will combine their characters, worlds, and
-                                AI-generated dialogue into a polished, printable 5-page digital comic book.</p>
+                                AI-generated dialogue into a polished, printable 5-page digital comic book.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Month 2 -->
-            <div class="reveal" style="margin-bottom:var(--space-3xl)">
-                <h2 data-i18n="syllabus.m2.title"
-                    style="font-family:var(--font-heading);color:var(--purple);border-bottom:2px solid var(--gray-100);padding-bottom:var(--space-sm);margin-bottom:var(--space-lg)">
-                    Month 2: Video, Audio & Animation</h2>
+            <div class="reveal"
+                style="margin-bottom:var(--space-3xl); background:white; padding:var(--space-2xl); border-radius:var(--radius-xl); box-shadow:var(--shadow-md); border:1px solid var(--gray-100)">
+                <div style="display:flex; align-items:center; gap:var(--space-md); margin-bottom:var(--space-lg)">
+                    <span
+                        style="font-size:2rem; background:rgba(124,58,237,0.1); padding:0.8rem; border-radius:var(--radius-md)">🎬</span>
+                    <h2 data-i18n="syllabus.m2.title"
+                        style="font-family:var(--font-heading); color:var(--gray-900); font-size:1.75rem; font-weight:800; margin:0">
+                        Month 2: Video, Audio & Animation</h2>
+                </div>
 
-                <div style="display:grid;gap:var(--space-lg)">
-                    <div>
-                        <h3 data-i18n="syllabus.w5.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week 5:
-                            Giving Characters a Voice</h3>
-                        <p data-i18n="syllabus.w5.desc" style="color:var(--gray-600)">Students will use AI to generate
-                            realistic voiceovers, clone custom voices safely, and compose original background music to
-                            set the mood.</p>
-                    </div>
-                    <div>
-                        <h3 data-i18n="syllabus.w6.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week 6:
-                            Bringing Images to Life</h3>
-                        <p data-i18n="syllabus.w6.desc" style="color:var(--gray-600)">The magic moment: transforming
-                            static pictures into cinematic motion clips and making characters actually speak with
-                            lip-sync technology.</p>
-                    </div>
-                    <div>
-                        <h3 data-i18n="syllabus.w7.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week 7:
-                            Directing the Edit</h3>
-                        <p data-i18n="syllabus.w7.desc" style="color:var(--gray-600)">Learning pro-level video editing
-                            basics in CapCut to assemble their generated clips, add impactful transitions, and perfectly
-                            sync the audio.</p>
-                    </div>
-                    <div>
+                <div
+                    style="display:grid; gap:var(--space-xl); border-left:2px solid var(--gray-100); padding-left:var(--space-lg); margin-left:1.5rem">
+                    <div style="position:relative">
                         <div
-                            style="background:var(--purple-light); border-left: 4px solid var(--purple); padding: var(--space-md); border-radius: 8px; margin-top: var(--space-sm);">
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--purple); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w5.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 5: Giving Characters a Voice</h3>
+                        <p data-i18n="syllabus.w5.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">Students will use AI to
+                            generate realistic voiceovers, clone custom voices safely, and compose original background
+                            music to set the mood.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--purple); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w6.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 6: Bringing Images to Life</h3>
+                        <p data-i18n="syllabus.w6.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">The magic moment:
+                            transforming static pictures into cinematic motion clips and making characters actually
+                            speak with lip-sync technology.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--purple); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w7.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 7: Directing the Edit</h3>
+                        <p data-i18n="syllabus.w7.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">Learning pro-level video
+                            editing basics in CapCut to assemble their generated clips, add impactful transitions, and
+                            perfectly sync the audio.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="background:rgba(124,58,237,0.05); border-radius:var(--radius-lg); padding:var(--space-lg); border:1px solid rgba(124,58,237,0.1)">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                                <span style="font-size: 1.5rem;">🎬</span>
+                                <span style="font-size: 1.25rem;">🎬</span>
                                 <h3 data-i18n="syllabus.w8.title"
-                                    style="font-weight:700; color: var(--purple-dark); margin: 0;">Portfolio Checkpoint:
-                                    Animated Movie Trailer</h3>
+                                    style="font-weight:800; color: var(--purple); margin: 0; font-size:1rem; text-transform:uppercase; letter-spacing:0.04em">
+                                    Portfolio Checkpoint: Animated Movie Trailer</h3>
                             </div>
-                            <p data-i18n="syllabus.w8.desc" style="color:var(--gray-800); margin: 0; line-height: 1.5;">
+                            <p data-i18n="syllabus.w8.desc"
+                                style="color:var(--gray-800); margin: 0; line-height: 1.5; font-size:0.95rem">
                                 <strong>Deliverable:</strong> Your child will direct and premiere a breathtaking
-                                60-second video trailer for their original story concept.</p>
+                                60-second video trailer for their original story concept.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Month 3 -->
-            <div class="reveal" style="margin-bottom:var(--space-3xl)">
-                <h2 data-i18n="syllabus.m3.title"
-                    style="font-family:var(--font-heading);color:var(--gray-900);border-bottom:2px solid var(--gray-100);padding-bottom:var(--space-sm);margin-bottom:var(--space-lg)">
-                    Month 3: AI Apps & Automation</h2>
+            <div class="reveal"
+                style="margin-bottom:var(--space-3xl); background:white; padding:var(--space-2xl); border-radius:var(--radius-xl); box-shadow:var(--shadow-md); border:1px solid var(--gray-100)">
+                <div style="display:flex; align-items:center; gap:var(--space-md); margin-bottom:var(--space-lg)">
+                    <span
+                        style="font-size:2rem; background:rgba(16,185,129,0.1); padding:0.8rem; border-radius:var(--radius-md)">🚀</span>
+                    <h2 data-i18n="syllabus.m3.title"
+                        style="font-family:var(--font-heading); color:var(--gray-900); font-size:1.75rem; font-weight:800; margin:0">
+                        Month 3: AI Apps & Automation</h2>
+                </div>
 
-                <div style="display:grid;gap:var(--space-lg)">
-                    <div>
-                        <h3 data-i18n="syllabus.w9.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week 9:
-                            Building Apps Without Code</h3>
-                        <p data-i18n="syllabus.w9.desc" style="color:var(--gray-600)">Students will use AI agents to
-                            build a fully functional web app or game interface in hours, not weeks—no complex coding
-                            required.</p>
-                    </div>
-                    <div>
-                        <h3 data-i18n="syllabus.w10.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week
-                            10: The Magic of Automation</h3>
-                        <p data-i18n="syllabus.w10.desc" style="color:var(--gray-600)">Learning how to make different AI
-                            tools talk to each other automatically using n8n, saving time and creating powerful
-                            workflows.</p>
-                    </div>
-                    <div>
-                        <h3 data-i18n="syllabus.w11.title" style="font-weight:700;margin-bottom:var(--space-xs)">Week
-                            11: Connecting the Dots</h3>
-                        <p data-i18n="syllabus.w11.desc" style="color:var(--gray-600)">Integrating the art, voices, and
-                            videos they created in Months 1 & 2 into their web app to create a rich, interactive
-                            multimedia experience.</p>
-                    </div>
-                    <div>
+                <div
+                    style="display:grid; gap:var(--space-xl); border-left:2px solid var(--gray-100); padding-left:var(--space-lg); margin-left:1.5rem">
+                    <div style="position:relative">
                         <div
-                            style="background:var(--green-light); border-left: 4px solid var(--green); padding: var(--space-md); border-radius: 8px; margin-top: var(--space-sm);">
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--success); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w9.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 9: Building Apps Without Code</h3>
+                        <p data-i18n="syllabus.w9.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">Students will use AI
+                            agents to build a fully functional web app or game interface in hours, not weeks—no complex
+                            coding required.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--success); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w10.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 10: The Magic of Automation</h3>
+                        <p data-i18n="syllabus.w10.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">Learning how to make
+                            different AI tools talk to each other automatically using n8n, saving time and creating
+                            powerful workflows.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="position:absolute; left:-1.95rem; top:0.5rem; width:12px; height:12px; background:var(--success); border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px var(--gray-100)">
+                        </div>
+                        <h3 data-i18n="syllabus.w11.title"
+                            style="font-weight:700; font-size:1.1rem; margin-bottom:var(--space-xs); color:var(--gray-900)">
+                            Week 11: Connecting the Dots</h3>
+                        <p data-i18n="syllabus.w11.desc"
+                            style="color:var(--gray-600); font-size:0.95rem; line-height:1.6">Integrating the art,
+                            voices, and videos they created in Months 1 & 2 into their web app to create a rich,
+                            interactive multimedia experience.</p>
+                    </div>
+                    <div style="position:relative">
+                        <div
+                            style="background:rgba(16,185,129,0.05); border-radius:var(--radius-lg); padding:var(--space-lg); border:1px solid rgba(16,185,129,0.1)">
                             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                                <span style="font-size: 1.5rem;">🚀</span>
+                                <span style="font-size: 1.25rem;">🏆</span>
                                 <h3 data-i18n="syllabus.w12.title"
-                                    style="font-weight:700; color: var(--green-dark); margin: 0;">Portfolio Checkpoint:
-                                    AI Powered App</h3>
+                                    style="font-weight:800; color: var(--success); margin: 0; font-size:1rem; text-transform:uppercase; letter-spacing:0.04em">
+                                    Portfolio Checkpoint: AI Powered App</h3>
                             </div>
                             <p data-i18n="syllabus.w12.desc"
-                                style="color:var(--gray-800); margin: 0; line-height: 1.5;">
+                                style="color:var(--gray-800); margin: 0; line-height: 1.5; font-size:0.95rem">
                                 <strong>Deliverable:</strong> Students will publish a live web app or interactive game
-                                and present their entire portfolio to parents and peers on Demo Day.</p>
+                                and present their entire portfolio to parents and peers on Demo Day.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -272,6 +348,56 @@
             </div>
         </div>
     </footer>
+
+    <!-- REGISTRATION MODAL -->
+    <div class="modal-overlay" id="regModal">
+        <div class="modal-container">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <h3 data-i18n="modal.title">Join the Live Academy</h3>
+                <p data-i18n="modal.subtitle">Secure your spot in the next cohort.</p>
+            </div>
+            <div class="modal-urgency" data-i18n="modal.urgency_text">⏳ Spots for the Summer 2026 Cohort are filling up
+                fast!
+            </div>
+            <form class="modal-form" id="regForm">
+                <input type="hidden" id="productType" name="productType" value="fixed">
+                <div class="form-group">
+                    <label id="lblName" for="name" data-i18n="modal.name_label">Full Name <span
+                            class="required">*</span></label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label id="lblPhone" for="phone" data-i18n="modal.phone_label">Phone Number <span
+                            class="optional">(Optional)</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
+                </div>
+
+                <div class="form-group">
+                    <label id="lblEmail" for="email" data-i18n="modal.email_label">Your Email Address <span
+                            class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="test@gmail.com">
+                </div>
+
+                <div class="form-group" id="cohortGroup">
+                    <label for="cohort" data-i18n="modal.cohort_label">Select Cohort <span
+                            class="required">*</span></label>
+                    <select id="cohort" name="cohort" required>
+                        <option value="" disabled selected data-i18n="modal.select_placeholder">Loading cohorts...
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="regSubmit">
+                    <span data-i18n="modal.submit_btn">Complete Registration</span>
+                </button>
+                <p class="form-footer" data-i18n="modal.footer_text">We'll send next steps to your email. No payment
+                    required
+                    today.</p>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
