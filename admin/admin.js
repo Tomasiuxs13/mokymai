@@ -1544,6 +1544,10 @@ function renderAssignments(assignments) {
   `).join('');
 }
 
+// Cache of most recently loaded submissions, keyed by submission ID.
+// Used by openGradingModal to avoid passing user-controlled data through inline onclick handlers (XSS).
+const submissionsCache = new Map();
+
 async function viewAssignmentSubmissions(assignmentId) {
   const assignment = assignmentsCache.find(a => a.id === assignmentId);
   if (!assignment) return;
@@ -1555,6 +1559,9 @@ async function viewAssignmentSubmissions(assignmentId) {
     .order('submitted_at', { ascending: false });
 
   if (error) { showToast('Failed to load submissions', 'error'); return; }
+
+  submissionsCache.clear();
+  submissions.forEach(s => submissionsCache.set(s.id, { ...s, _assignmentId: assignmentId, _maxPoints: assignment.max_points }));
 
   const panel = document.getElementById('detailPanel');
   const body = document.getElementById('detailPanelBody');
@@ -1600,7 +1607,7 @@ async function viewAssignmentSubmissions(assignmentId) {
           </div>
 
           <div style="display:flex;gap:.5rem;width:100%;margin-top:.5rem">
-             <button class="btn-sm btn-primary" onclick="openGradingModal('${s.id}', '${assignmentId}', ${assignment.max_points}, ${s.grade || 'null'}, '${esc(s.feedback || '')}')">
+             <button class="btn-sm btn-primary" onclick="openGradingModal('${s.id}')">
                ${s.grade ? 'Edit Grade' : 'Grade Submission'}
              </button>
           </div>
@@ -1677,17 +1684,37 @@ async function removeSubmissionFile(submissionId, filePath, assignmentId) {
   await viewAssignmentSubmissions(assignmentId);
 }
 
-function openGradingModal(submissionId, assignmentId, maxPoints, currentGrade, currentFeedback) {
+async function openGradingModal(submissionId) {
+  let submission = submissionsCache.get(submissionId);
+  let maxPoints = submission?._maxPoints;
+  let assignmentId = submission?._assignmentId;
+
+  // Fallback: fetch directly when opened from a context where the cache isn't populated (e.g. dashboard).
+  if (!submission) {
+    const { data, error } = await sb()
+      .from('submissions')
+      .select('*, assignments(id, max_points)')
+      .eq('id', submissionId)
+      .single();
+    if (error || !data) { showToast('Could not load submission', 'error'); return; }
+    submission = data;
+    maxPoints = data.assignments?.max_points;
+    assignmentId = data.assignment_id;
+  }
+
+  const currentGrade = submission.grade;
+  const currentFeedback = submission.feedback || '';
+
   openModal(
     'Grade Submission',
     `
       <div class="form-group">
-        <label>Grade (Max ${maxPoints})</label>
-        <input type="number" id="mGradePoints" value="${currentGrade !== null ? currentGrade : ''}" max="${maxPoints}" />
+        <label>Grade (Max ${esc(String(maxPoints))})</label>
+        <input type="number" id="mGradePoints" value="${currentGrade !== null && currentGrade !== undefined ? esc(String(currentGrade)) : ''}" max="${esc(String(maxPoints))}" min="0" />
       </div>
       <div class="form-group">
         <label>Feedback</label>
-        <textarea id="mGradeFeedback" style="height:100px">${currentFeedback || ''}</textarea>
+        <textarea id="mGradeFeedback" style="height:100px">${esc(currentFeedback)}</textarea>
       </div>
     `,
     async () => {
@@ -1707,7 +1734,7 @@ function openGradingModal(submissionId, assignmentId, maxPoints, currentGrade, c
       if (error) throw error;
 
       showToast('Graded successfully');
-      viewAssignmentSubmissions(assignmentId);
+      if (assignmentId) await viewAssignmentSubmissions(assignmentId);
     }
   );
 }

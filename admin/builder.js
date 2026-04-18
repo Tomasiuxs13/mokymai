@@ -22,6 +22,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     initEditor();
 });
 
+// Warn on leaving page with unsaved lesson edits
+window.addEventListener('beforeunload', (e) => {
+    if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
 /* ----------------------------------------------------------
    Data Loading
    ---------------------------------------------------------- */
@@ -191,11 +199,14 @@ function updateSaveBar() {
     else bar.classList.remove('visible');
 }
 
+let isSaving = false;
 async function saveCurrent() {
-    if (!activeLessonId) return;
+    if (!activeLessonId || isSaving) return;
 
-    const title = document.getElementById('editTitle').value;
-    const video_url = document.getElementById('editVideoUrl').value;
+    const title = document.getElementById('editTitle').value.trim();
+    if (!title) { alert('Lesson title cannot be empty.'); return; }
+
+    const video_url = document.getElementById('editVideoUrl').value.trim();
     const duration_min = parseInt(document.getElementById('editDuration').value) || 0;
     const is_free = document.getElementById('editIsFree').checked;
     const html = editor ? editor.getHTML() : '';
@@ -209,23 +220,26 @@ async function saveCurrent() {
         updated_at: new Date().toISOString()
     };
 
-    const sb = window.WebGeniusDB.supabase;
-    const { error } = await sb.from('lessons').update(updates).eq('id', activeLessonId);
+    isSaving = true;
+    const saveBtn = document.querySelector('#saveBar button[onclick*="saveCurrent"]');
+    const prevLabel = saveBtn ? saveBtn.textContent : null;
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
 
-    if (error) {
-        alert('Error saving: ' + error.message);
-        return;
+    try {
+        const sb = window.WebGeniusDB.supabase;
+        const { error } = await sb.from('lessons').update(updates).eq('id', activeLessonId);
+        if (error) { alert('Error saving: ' + error.message); return; }
+
+        const idx = lessonsCache.findIndex(l => l.id === activeLessonId);
+        if (idx !== -1) Object.assign(lessonsCache[idx], updates);
+
+        isDirty = false;
+        updateSaveBar();
+        renderStructure();
+    } finally {
+        isSaving = false;
+        if (saveBtn) { saveBtn.disabled = false; if (prevLabel) saveBtn.textContent = prevLabel; }
     }
-
-    // Update Cache
-    const idx = lessonsCache.findIndex(l => l.id === activeLessonId);
-    if (idx !== -1) {
-        Object.assign(lessonsCache[idx], updates);
-    }
-
-    isDirty = false;
-    updateSaveBar();
-    renderStructure(); // Refresh titles etc
 }
 
 /* ----------------------------------------------------------
@@ -261,23 +275,43 @@ async function handleDrop(e) {
     const lessonId = draggedItem.dataset.id;
     const moduleId = zone.dataset.moduleId === 'null' ? null : zone.dataset.moduleId;
 
-    // Update local cache
-    const lesson = lessonsCache.find(l => l.id === lessonId);
-    if (lesson) {
-        lesson.module_id = moduleId;
-    }
+    // Update local cache — both module assignment and sort order
+    const movedLesson = lessonsCache.find(l => l.id === lessonId);
+    if (movedLesson) movedLesson.module_id = moduleId;
 
-    // Persist Move
+    // Rebuild sort_order across all lessons in this drop zone based on DOM order
+    const newOrderIds = [...zone.querySelectorAll('.lesson-node')].map(el => el.dataset.id);
+    newOrderIds.forEach((id, idx) => {
+        const l = lessonsCache.find(x => x.id === id);
+        if (l) l.sort_order = idx;
+    });
+
+    // Persist: update moved lesson's module_id, then upsert sort_order for the reordered group
     const sb = window.WebGeniusDB.supabase;
-    await sb.from('lessons').update({ module_id: moduleId }).eq('id', lessonId);
+    const updates = newOrderIds.map((id, idx) => ({
+        id,
+        module_id: moduleId,
+        sort_order: idx,
+        updated_at: new Date().toISOString()
+    }));
+
+    const { error } = await sb.from('lessons').upsert(updates);
+    if (error) {
+        alert('Error saving lesson order: ' + error.message);
+        // Reload to restore true DB state
+        await loadCourseData();
+    }
 }
 
 /* ----------------------------------------------------------
    Module Management
    ---------------------------------------------------------- */
 async function addModule() {
-    const title = prompt('Module Title:');
-    if (!title) return;
+    const raw = prompt('Module Title:');
+    if (raw === null) return;
+    const title = raw.trim();
+    if (!title) { alert('Module title cannot be empty.'); return; }
+    if (title.length > 255) { alert('Module title is too long (max 255 characters).'); return; }
 
     const sb = window.WebGeniusDB.supabase;
     const { data, error } = await sb.from('modules').insert({
@@ -371,18 +405,25 @@ window.addModule = addModule;
 window.addLesson = addLesson;
 window.editModule = async (id) => {
     const mod = modulesCache.find(m => m.id === id);
-    const newTitle = prompt('Rename Module:', mod.title);
-    if (newTitle && newTitle !== mod.title) {
-        const sb = window.WebGeniusDB.supabase;
-        await sb.from('modules').update({ title: newTitle }).eq('id', id);
-        mod.title = newTitle;
-        renderStructure();
-    }
+    if (!mod) return;
+    const raw = prompt('Rename Module:', mod.title);
+    if (raw === null) return;
+    const newTitle = raw.trim();
+    if (!newTitle) { alert('Module title cannot be empty.'); return; }
+    if (newTitle.length > 255) { alert('Module title is too long (max 255 characters).'); return; }
+    if (newTitle === mod.title) return;
+
+    const sb = window.WebGeniusDB.supabase;
+    const { error } = await sb.from('modules').update({ title: newTitle }).eq('id', id);
+    if (error) { alert('Error renaming module: ' + error.message); return; }
+    mod.title = newTitle;
+    renderStructure();
 }
 window.deleteModule = async (id) => {
     if (!confirm('Delete this module? Lessons will be unassigned.')) return;
     const sb = window.WebGeniusDB.supabase;
-    await sb.from('modules').delete().eq('id', id);
+    const { error } = await sb.from('modules').delete().eq('id', id);
+    if (error) { alert('Error deleting module: ' + error.message); return; }
     modulesCache = modulesCache.filter(m => m.id !== id);
     // Move lessons in cache to unassigned
     lessonsCache.forEach(l => { if (l.module_id === id) l.module_id = null; });
@@ -406,11 +447,12 @@ window.closeSettingsModal = function () {
 }
 
 window.saveCourseSettings = async function () {
-    const title = document.getElementById('setCourseTitle').value;
-    const thumbnail = document.getElementById('setCourseThumb').value;
+    const title = document.getElementById('setCourseTitle').value.trim();
+    const thumbnail = document.getElementById('setCourseThumb').value.trim();
     const description = document.getElementById('setCourseDesc').value;
 
     if (!title) return alert('Title is required');
+    if (title.length > 255) return alert('Title is too long (max 255 characters).');
 
     const sb = window.WebGeniusDB.supabase;
     const { error } = await sb.from('courses').update({
