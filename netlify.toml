@@ -1,0 +1,53 @@
+# Netlify config — serve minified assets in production, raw in dev.
+#
+# The build runs `npm run build` which creates *.min.js / *.min.css
+# next to the originals. These rewrites transparently serve the
+# minified versions to browsers while the HTML still references
+# `script.js`, `index.css`, etc.
+
+[build]
+  command = "npm install && npm run build"
+  publish = "."
+
+[[redirects]]
+  from = "/script.js"
+  to = "/script.min.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/supabase.js"
+  to = "/supabase.min.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/admin.js"
+  to = "/admin/admin.min.js"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/index.css"
+  to = "/index.min.css"
+  status = 200
+  force = true
+
+# Long-cache the hashed files (browsers cache-bust via ?v=HASH anyway)
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"

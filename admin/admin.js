@@ -22,10 +22,13 @@ function showToast(message, type = 'success') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
-    <span>${message}</span>
-  `;
+  const icon = document.createElement('span');
+  icon.className = 'toast-icon';
+  icon.textContent = type === 'success' ? '✓' : '✕';
+  const text = document.createElement('span');
+  text.textContent = String(message == null ? '' : message);
+  toast.append(icon, text);
+  toast.setAttribute('role', type === 'success' ? 'status' : 'alert');
   container.appendChild(toast);
   requestAnimationFrame(() => toast.classList.add('show'));
   setTimeout(() => {
@@ -75,9 +78,14 @@ function closeModal() {
 function confirmDialog(message) {
   return new Promise((resolve) => {
     _modalResolve = resolve;
+    const safe = document.createElement('div');
+    const p = document.createElement('p');
+    p.style.cssText = 'color:var(--gray-600);font-size:.95rem;';
+    p.textContent = String(message == null ? '' : message);
+    safe.appendChild(p);
     openModal(
       'Confirm',
-      `<p style="color:var(--gray-600);font-size:.95rem;">${message}</p>`,
+      safe.innerHTML,
       async () => { _modalResolve = null; resolve(true); }
     );
     document.getElementById('modalSave').textContent = 'Confirm';
@@ -385,6 +393,7 @@ async function loadSectionData(section) {
       case 'diplomas': await loadDiplomas(); break;
       case 'progress': await loadProgress(); break;
       case 'announcements': await loadAnnouncements(); break;
+      case 'data-requests': await loadDataRequests(); break;
       case 'settings': await loadSettings(); break;
     }
   } catch (err) {
@@ -3559,4 +3568,116 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+});
+
+/* ============================================================
+   GDPR — Data Requests
+   ============================================================ */
+
+async function loadDataRequests() {
+  const tbody = document.getElementById('dataRequestsTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><p>Loading…</p></td></tr>`;
+
+  const { data, error } = await sb()
+    .from('data_requests')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><p>Error: ${esc(error.message)}</p></td></tr>`;
+    return;
+  }
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><p>No data requests yet.</p></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(r => {
+    const when = new Date(r.created_at).toLocaleDateString();
+    const statusColor = r.status === 'pending' ? '#f59e0b' : r.status === 'fulfilled' ? '#10b981' : '#6b7280';
+    const typeBadge = r.request_type === 'delete' ? '🗑️ Delete' : '📥 Export';
+    return `<tr>
+      <td>${esc(when)}</td>
+      <td><code style="font-size:.85rem">${esc(r.email)}</code></td>
+      <td>${typeBadge}</td>
+      <td><span style="color:${statusColor};font-weight:600">${esc(r.status)}</span></td>
+      <td style="max-width:280px;font-size:.85rem;color:var(--gray-600)">${esc(r.reason || '—')}</td>
+      <td>
+        ${r.request_type === 'export'
+          ? `<button class="btn-sm btn-edit" onclick="gdprFulfillExport('${r.id}', '${esc(r.email)}')">Export</button>`
+          : `<button class="btn-sm btn-delete" onclick="gdprFulfillDelete('${r.id}', '${esc(r.email)}')">Delete</button>`}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function gdprExport() {
+  const email = (document.getElementById('gdprLookupEmail').value || '').trim();
+  if (!email) { showToast('Enter an email first', 'error'); return; }
+  await _gdprExport(email);
+}
+
+async function gdprForget() {
+  const email = (document.getElementById('gdprLookupEmail').value || '').trim();
+  if (!email) { showToast('Enter an email first', 'error'); return; }
+  const ok = await confirmDialog(`Permanently delete ALL data for ${email}? This cannot be undone.`);
+  if (!ok) return;
+  await _gdprForget(email);
+}
+
+async function gdprFulfillExport(reqId, email) {
+  await _gdprExport(email);
+  await sb().from('data_requests').update({
+    status: 'fulfilled',
+    fulfilled_at: new Date().toISOString(),
+  }).eq('id', reqId);
+  await loadDataRequests();
+}
+
+async function gdprFulfillDelete(reqId, email) {
+  const ok = await confirmDialog(`Permanently delete ALL data for ${email}? This cannot be undone.`);
+  if (!ok) return;
+  await _gdprForget(email);
+  await loadDataRequests();
+}
+
+async function _gdprExport(email) {
+  const { data, error } = await sb().rpc('export_user_data', { p_email: email });
+  if (error) { showToast(`Export failed: ${error.message}`, 'error'); return; }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `data-export-${email}-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast(`Exported data for ${email}`);
+}
+
+async function _gdprForget(email) {
+  const { data, error } = await sb().rpc('forget_user_data', { p_email: email });
+  if (error) { showToast(`Delete failed: ${error.message}`, 'error'); return; }
+  showToast(`Deleted: ${data.registrations_deleted} registrations for ${email}`);
+}
+
+async function loadDataRequestsBadge() {
+  const badge = document.getElementById('dataRequestsBadge');
+  if (!badge) return;
+  const { count } = await sb()
+    .from('data_requests')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'pending');
+  if (count && count > 0) {
+    badge.textContent = count;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => { try { loadDataRequestsBadge(); } catch(_){} }, 800);
 });

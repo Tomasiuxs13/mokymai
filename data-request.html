@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Request — Web Genius</title>
+  <meta name="description" content="Request a copy of your personal data or ask us to delete it, in line with GDPR." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://becomewebgenius.com/data-request.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css?v=f5a1c848" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+</head>
+<body>
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <a href="index.html" class="nav-logo" aria-label="Web Genius home">Web<span>Genius</span></a>
+    </div>
+  </nav>
+
+  <main style="max-width:720px;margin:0 auto;padding:var(--space-2xl) var(--space-md)">
+    <h1 style="font-family:var(--font-heading)">Your data, your choice</h1>
+    <p style="color:var(--gray-600);margin-bottom:var(--space-lg)">
+      Under the GDPR (and in the spirit of the COPPA rules we follow for US children),
+      you can ask for a copy of the personal data we hold about you or your child,
+      or ask us to delete it. Submit the form below and we'll respond within
+      <strong>30 days</strong>.
+    </p>
+
+    <form id="dataReqForm" class="modal-form" style="background:var(--white);padding:var(--space-lg);border-radius:var(--radius-lg);box-shadow:var(--shadow-md)">
+      <div class="form-group">
+        <label for="drEmail">Email on file <span class="required">*</span></label>
+        <input type="email" id="drEmail" name="email" required autocomplete="email" inputmode="email" maxlength="120" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" aria-describedby="drEmailErr" aria-invalid="false" />
+        <small class="field-error" id="drEmailErr" role="alert" aria-live="polite"></small>
+      </div>
+
+      <div class="form-group">
+        <label for="drType">What would you like us to do? <span class="required">*</span></label>
+        <select id="drType" name="request_type" required>
+          <option value="export">Send me a copy of my data (export)</option>
+          <option value="delete">Delete my data permanently (right to be forgotten)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="drReason">Additional context <span class="optional">(optional)</span></label>
+        <textarea id="drReason" name="reason" rows="3" maxlength="1000" placeholder="Anything that helps us identify your records — cohort name, child's first name, etc."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label style="display:flex;gap:.55rem;align-items:flex-start;font-size:.85rem;line-height:1.4;cursor:pointer;color:var(--gray-600)">
+          <input type="checkbox" id="drConsent" required style="margin-top:.2rem;flex-shrink:0" />
+          <span>I confirm this request is for my own data, or for the data of a child I am the parent or legal guardian of.</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="drSubmit">Submit request</button>
+      <p class="form-footer">You'll receive an email confirmation within 30 days at the address above.</p>
+    </form>
+
+    <div id="drSuccess" style="display:none;background:var(--green);color:var(--white);padding:var(--space-lg);border-radius:var(--radius-lg);margin-top:var(--space-lg)">
+      <strong>✓ Request received.</strong><br>
+      We'll email you within 30 days. For urgent matters, contact <a href="mailto:privacy@becomewebgenius.com" style="color:var(--white);text-decoration:underline">privacy@becomewebgenius.com</a>.
+    </div>
+
+    <p style="margin-top:var(--space-xl);font-size:.85rem;color:var(--gray-400)">
+      See our <a href="privacy.html">Privacy Policy</a> for more on how we handle your data.
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase.js?v=f5a1c848" defer></script>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('dataReqForm');
+      const btn = document.getElementById('drSubmit');
+      const success = document.getElementById('drSuccess');
+      const emailInput = document.getElementById('drEmail');
+      const emailErr = document.getElementById('drEmailErr');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (btn.disabled) return;
+
+        const email = emailInput.value.trim();
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(email)) {
+          emailInput.setAttribute('aria-invalid', 'true');
+          emailErr.textContent = 'Please enter a valid email address.';
+          emailInput.focus();
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Submitting…';
+        try {
+          const { error } = await window.WebGeniusDB.supabase
+            .from('data_requests')
+            .insert({
+              email,
+              request_type: document.getElementById('drType').value,
+              reason: document.getElementById('drReason').value.trim() || null,
+            });
+          if (error) throw error;
+          form.style.display = 'none';
+          success.style.display = 'block';
+          success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (err) {
+          console.error(err);
+          btn.disabled = false;
+          btn.textContent = 'Submit request';
+          emailErr.textContent = 'Something went wrong. Please email privacy@becomewebgenius.com instead.';
+        }
+      });
+    });
+  </script>
+
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>&copy; 2026 Web Genius. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

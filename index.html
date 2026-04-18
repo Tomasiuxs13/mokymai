@@ -52,7 +52,7 @@
   </script>
 
   <!-- Preload Critical Resources -->
-  <link rel="preload" as="image" href="hero.png">
+  <link rel="preload" as="image" href="hero.webp" type="image/webp" fetchpriority="high">
 
   <!-- Font Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,7 +61,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="index.css?v=8" />
+  <link rel="stylesheet" href="index.css?v=f5a1c848" />
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
 
@@ -116,9 +116,9 @@
   <!-- ========================================================
        NAVIGATION
        ======================================================== -->
-  <nav class="navbar" id="navbar">
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
     <div class="container">
-      <a href="#" class="nav-logo">Web<span>Genius</span></a>
+      <a href="#" class="nav-logo" aria-label="Web Genius home">Web<span>Genius</span></a>
 
       <div class="nav-links" id="navLinks">
         <a href="#paths" data-i18n="nav.programs">Programs</a>
@@ -135,7 +135,7 @@
         <button data-region="lt">🇱🇹 LT</button>
       </div>
 
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -164,8 +164,11 @@
           </div>
         </div>
         <div class="hero-image reveal">
-          <img src="hero.png" alt="Diverse group of kids coding with holographic AI elements" width="580"
-            height="580" />
+          <picture>
+            <source srcset="hero.webp" type="image/webp">
+            <img src="hero.png" alt="Diverse group of kids coding with holographic AI elements" width="580"
+              height="580" fetchpriority="high" decoding="async" />
+          </picture>
           <div class="hero-float" data-i18n="hero.float1">🤖 AI &amp; Machine Learning</div>
           <div class="hero-float" data-i18n="hero.float2">🤖 AI Agents (Antigravity)</div>
           <div class="hero-float" data-i18n="hero.float3">🚀 Build Real Apps</div>
@@ -386,7 +389,7 @@
             <div class="project-image"
               style="background: var(--blue-light); overflow: hidden; display: flex; align-items: center; justify-content: center; height: 180px;">
               <img src="https://placehold.co/600x400/2563EB/ffffff?text=Comic+Book+Preview" alt="AI Comic Book Preview"
-                style="width: 100%; height: 100%; object-fit: cover;" />
+                style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" decoding="async" />
             </div>
             <div class="project-content">
               <h3 data-i18n="projects.p1.title">AI Comic Book</h3>
@@ -401,7 +404,7 @@
             <div class="project-image"
               style="background: var(--purple-light); overflow: hidden; display: flex; align-items: center; justify-content: center; height: 180px;">
               <img src="https://placehold.co/600x400/7C3AED/ffffff?text=Movie+Trailer+Preview"
-                alt="Animated Trailer Preview" style="width: 100%; height: 100%; object-fit: cover;" />
+                alt="Animated Trailer Preview" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" decoding="async" />
             </div>
             <div class="project-content">
               <h3 data-i18n="projects.p2.title">Animated Trailer</h3>
@@ -416,7 +419,7 @@
             <div class="project-image"
               style="background: var(--green); overflow: hidden; display: flex; align-items: center; justify-content: center; height: 180px;">
               <img src="https://placehold.co/600x400/10B981/ffffff?text=Web+App+Preview" alt="AI Web App Preview"
-                style="width: 100%; height: 100%; object-fit: cover;" />
+                style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" decoding="async" />
             </div>
             <div class="project-content">
               <h3 data-i18n="projects.p3.title">AI Powered Web App</h3>
@@ -620,7 +623,7 @@
           <h4 data-i18n="footer.legal">Legal</h4>
           <a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a>
           <a href="terms.html" data-i18n="footer.terms">Terms of Service</a>
-          <a href="#">GDPR / COPPA</a>
+          <a href="data-request.html" data-i18n="footer.data_request">Data Request (GDPR)</a>
           <a href="cookies.html" data-i18n="footer.cookies">Cookie Policy</a>
         </div>
       </div>
@@ -634,11 +637,11 @@
   <!-- ========================================================
        REGISTRATION MODAL
        ======================================================== -->
-  <div class="modal-overlay" id="regModal">
+  <div class="modal-overlay" id="regModal" role="dialog" aria-modal="true" aria-labelledby="regModalTitle" aria-hidden="true">
     <div class="modal-container">
-      <button class="modal-close" id="closeModal">&times;</button>
+      <button class="modal-close" id="closeModal" aria-label="Close registration form">&times;</button>
       <div class="modal-header">
-        <h3 data-i18n="modal.title">Join the Live Academy</h3>
+        <h3 id="regModalTitle" data-i18n="modal.title">Join the Live Academy</h3>
         <p data-i18n="modal.subtitle">Secure your spot in the next cohort.</p>
       </div>
       <div class="modal-urgency" data-i18n="modal.urgency_text">⏳ Spots for the Summer 2026 Cohort are filling up fast!
@@ -647,19 +650,22 @@
         <input type="hidden" id="productType" name="productType" value="fixed">
         <div class="form-group">
           <label id="lblName" for="name" data-i18n="modal.name_label">Full Name <span class="required">*</span></label>
-          <input type="text" id="name" name="name" required placeholder="John Doe">
+          <input type="text" id="name" name="name" required placeholder="John Doe" autocomplete="name" maxlength="80" minlength="2" aria-describedby="err-name" aria-invalid="false">
+          <small class="field-error" id="err-name" role="alert" aria-live="polite"></small>
         </div>
 
         <div class="form-row" style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
           <div class="form-group">
             <label id="lblEmail" for="email" data-i18n="modal.email_label">Your Email Address <span
                 class="required">*</span></label>
-            <input type="email" id="email" name="email" required placeholder="test@gmail.com">
+            <input type="email" id="email" name="email" required placeholder="test@gmail.com" autocomplete="email" inputmode="email" maxlength="120" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" aria-describedby="err-email" aria-invalid="false">
+            <small class="field-error" id="err-email" role="alert" aria-live="polite"></small>
           </div>
           <div class="form-group">
             <label id="lblPhone" for="phone" data-i18n="modal.phone_label">Phone Number <span
                 class="optional">(Optional)</span></label>
-            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900">
+            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" autocomplete="tel" inputmode="tel" maxlength="30" aria-describedby="err-phone" aria-invalid="false">
+            <small class="field-error" id="err-phone" role="alert" aria-live="polite"></small>
           </div>
         </div>
 
@@ -680,6 +686,14 @@
               <option value="4+">4+</option>
             </select>
           </div>
+        </div>
+
+        <div class="form-group consent-group" style="margin-top:var(--space-md)">
+          <label style="display:flex;gap:.55rem;align-items:flex-start;font-size:.85rem;line-height:1.4;cursor:pointer;color:var(--gray-600)">
+            <input type="checkbox" id="consent" name="consent" required style="margin-top:.2rem;flex-shrink:0" aria-describedby="err-consent">
+            <span data-i18n="modal.consent_text">I am the parent or legal guardian of the child being registered, and I agree to the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a>.</span>
+          </label>
+          <small class="field-error" id="err-consent" role="alert" aria-live="polite"></small>
         </div>
 
         <button type="submit" class="btn btn-primary" id="regSubmit">
@@ -709,8 +723,9 @@
 
   <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="supabase.js" defer></script>
-  <script src="script.js?v=7" defer></script>
+  <script src="supabase.js?v=f5a1c848" defer></script>
+  <script src="i18n-data.js?v=f5a1c848" defer></script>
+  <script src="script.js?v=f5a1c848" defer></script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Parent Login — Web Genius</title>
-    <link rel="stylesheet" href="../index.css" />
+    <link rel="stylesheet" href="../index.css?v=f5a1c848" />
     <link rel="stylesheet" href="parent.css" />
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
@@ -80,11 +80,11 @@
         </div>
     </div>
 
-    <script src="../supabase.js"></script>
+    <script src="../supabase.js?v=f5a1c848"></script>
     <script>
         async function ensureSupabase() {
             if (typeof signIn === 'function') return;
-            const res = await fetch('../supabase.js');
+            const res = await fetch('../supabase.js?v=f5a1c848');
             const code = await res.text();
             const s = document.createElement('script');
             s.textContent = code;

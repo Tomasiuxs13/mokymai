@@ -1,0 +1,21 @@
+# nginx — drop into your `server { ... }` block.
+# Serve *.min.js / *.min.css transparently when the browser asks for the raw file.
+
+location = /script.js         { try_files /script.min.js /script.js =404; }
+location = /supabase.js       { try_files /supabase.min.js /supabase.js =404; }
+location = /admin/admin.js    { try_files /admin/admin.min.js /admin/admin.js =404; }
+location = /index.css         { try_files /index.min.css /index.css =404; }
+
+# Long-cache static assets (hashes in ?v= take care of invalidation)
+location ~* \.(js|css|woff2?|png|jpg|webp|svg|ico)$ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+}
+
+# HTML — always revalidate so cache-bust hashes take effect immediately
+location ~* \.html$ {
+    add_header Cache-Control "public, max-age=0, must-revalidate";
+    add_header X-Content-Type-Options "nosniff";
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header Referrer-Policy "strict-origin-when-cross-origin";
+}

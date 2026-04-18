@@ -1,0 +1,13 @@
+{
+  "name": "web-genius-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web Genius marketing + student/parent/admin portals (static HTML).",
+  "scripts": {
+    "build": "node build.js",
+    "build:watch": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
