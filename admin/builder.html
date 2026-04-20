@@ -100,6 +100,12 @@
             background: var(--gray-100);
         }
 
+        .lesson-node:focus {
+            outline: 2px solid var(--primary-500);
+            outline-offset: 2px;
+        }
+        .lesson-node:focus:not(:focus-visible) { outline: none; }
+
         .drag-handle {
             color: var(--gray-400);
             margin-right: var(--space-sm);
@@ -152,11 +158,51 @@
             padding: var(--space-md);
             border: 1px solid var(--gray-200);
             border-radius: var(--radius-sm);
+            background: #fff;
         }
 
         .ProseMirror:focus {
             border-color: var(--primary-500);
         }
+
+        .ProseMirror h1 { font-size: 1.6rem; margin: .8rem 0 .4rem; font-weight: 700; }
+        .ProseMirror h2 { font-size: 1.3rem; margin: .7rem 0 .4rem; font-weight: 700; }
+        .ProseMirror h3 { font-size: 1.1rem; margin: .6rem 0 .3rem; font-weight: 600; }
+        .ProseMirror p  { margin: .4rem 0; line-height: 1.55; }
+        .ProseMirror ul, .ProseMirror ol { padding-left: 1.4rem; margin: .4rem 0; }
+        .ProseMirror blockquote { border-left: 3px solid var(--gray-300); margin: .6rem 0; padding: .2rem .8rem; color: var(--gray-600); }
+        .ProseMirror code { background: var(--gray-100); padding: 1px 5px; border-radius: 3px; font-size: .9em; }
+        .ProseMirror pre { background: var(--gray-900); color: #f3f4f6; padding: .8rem; border-radius: 6px; overflow-x: auto; }
+        .ProseMirror pre code { background: transparent; color: inherit; padding: 0; }
+        .ProseMirror a { color: var(--primary-600); text-decoration: underline; }
+        .ProseMirror img { max-width: 100%; height: auto; border-radius: 6px; }
+
+        /* Toolbar */
+        .rte-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            padding: 6px !important;
+            background: var(--gray-50) !important;
+            margin-bottom: 8px !important;
+        }
+        .rte-toolbar button {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 4px 8px;
+            font-size: .85rem;
+            color: var(--gray-700);
+            border-radius: 4px;
+            cursor: pointer;
+            min-width: 28px;
+            line-height: 1.2;
+        }
+        .rte-toolbar button:hover { background: #fff; border-color: var(--gray-200); }
+        .rte-toolbar button.is-active { background: var(--primary-100); color: var(--primary-700); border-color: var(--primary-200); }
+        .rte-toolbar .sep { width: 1px; align-self: stretch; background: var(--gray-200); margin: 2px 4px; }
 
         /* Floating save button */
         .save-bar {
@@ -336,10 +382,15 @@
             <div class="builder-header">
                 <a href="/admin/#courses" style="text-decoration:none;color:var(--gray-600)">&larr; Back</a>
                 <div style="display:flex;align-items:center;gap:10px">
-                    <h3 style="margin:0;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px"
+                    <h3 style="margin:0;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px"
                         id="courseNameTitle">Loading...</h3>
+                    <span id="courseStatusBadge" class="badge" style="font-size:.7rem">…</span>
                     <button class="btn-sm" onclick="openCourseSettings()" title="Course Settings">⚙️</button>
                 </div>
+            </div>
+            <div style="padding:var(--space-sm) var(--space-md);border-bottom:1px solid var(--gray-100);display:flex;gap:var(--space-xs)">
+                <button class="btn-sm" id="publishBtn" onclick="togglePublish()" style="flex:1">Publish…</button>
+                <button class="btn-sm" onclick="openPreview()" title="Open preview in student view">👁 Preview</button>
             </div>
 
             <div class="builder-controls"
@@ -357,16 +408,18 @@
         <!-- Main Content -->
         <main class="builder-content">
             <div id="editorArea" class="editor-container" style="display:none">
-                <div class="editor-header" style="margin-bottom:var(--space-lg)">
+                <div class="editor-header" style="margin-bottom:var(--space-lg);display:flex;align-items:center;gap:var(--space-md)">
                     <input type="text" id="editTitle" placeholder="Lesson Title"
-                        style="font-size:1.5rem;font-weight:700;border:none;width:100%;padding:5px 0;outline:none;background:transparent"
+                        style="font-size:1.5rem;font-weight:700;border:none;flex:1;padding:5px 0;outline:none;background:transparent"
                         oninput="markDirty()">
+                    <span id="saveStatus" style="font-size:.8rem;color:var(--gray-400);white-space:nowrap"></span>
+                    <button class="btn-sm" onclick="openRevisionHistory()" title="Revision history">🕘 History</button>
                 </div>
 
                 <div class="tabs">
                     <div class="tab active" onclick="switchTab('content')">Content</div>
                     <div class="tab" onclick="switchTab('settings')">Settings</div>
-                    <!-- <div class="tab" onclick="switchTab('assignments')">Assignments</div> -->
+                    <div class="tab" onclick="switchTab('assignments')">Assignments <span id="assignCountBadge" style="display:none;margin-left:4px;background:var(--primary-100);color:var(--primary-700);border-radius:10px;padding:1px 7px;font-size:.7rem"></span></div>
                 </div>
 
                 <!-- Content Tab -->
@@ -392,6 +445,29 @@
                         <input type="checkbox" id="editIsFree" onchange="markDirty()">
                         <label for="editIsFree" style="margin:0">Free Preview</label>
                     </div>
+
+                    <hr style="margin:var(--space-lg) 0;border:none;border-top:1px solid var(--gray-200)">
+
+                    <div class="form-group">
+                        <label style="display:flex;justify-content:space-between;align-items:center">
+                            <span>Attachments</span>
+                            <label style="display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .8rem;border-radius:var(--radius-sm);background:var(--primary-50);color:var(--primary-700);font-size:.8rem;font-weight:600;cursor:pointer;border:1px dashed var(--primary-200)">
+                                📤 Upload file
+                                <input type="file" id="attachmentFileInput" style="display:none" onchange="handleAttachmentUpload(this)">
+                            </label>
+                        </label>
+                        <small style="color:var(--gray-500);display:block;margin-top:4px">PDFs, slides, images, etc. Up to 50 MB each.</small>
+                        <div id="attachmentsList" style="margin-top:.6rem"></div>
+                    </div>
+                </div>
+
+                <!-- Assignments Tab -->
+                <div id="tab-assignments" class="tab-content" style="display:none">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-md)">
+                        <h4 style="margin:0">Lesson Assignments</h4>
+                        <button class="btn-sm btn-primary" onclick="openAssignmentEditor()">+ New Assignment</button>
+                    </div>
+                    <div id="assignmentsList"></div>
                 </div>
             </div>
 
@@ -400,10 +476,58 @@
             </div>
         </main>
 
-        <!-- Save Bar -->
-        <div class="save-bar" id="saveBar">
-            <span style="font-size:.9rem;color:var(--gray-600)">Unsaved changes</span>
-            <button class="btn-primary" onclick="saveCurrent()" style="padding:6px 16px">Save</button>
+    </div>
+
+    <!-- Revision History Modal -->
+    <div class="modal-overlay" id="revisionsModalOverlay">
+        <div class="modal" style="max-width:700px">
+            <div class="modal-header">
+                <h3>Revision History</h3>
+                <button class="modal-close" onclick="closeRevisionHistory()">✕</button>
+            </div>
+            <div class="modal-body" style="max-height:70vh;overflow-y:auto">
+                <p style="font-size:.8rem;color:var(--gray-500);margin-top:0">Showing up to 50 most recent snapshots for this lesson.</p>
+                <div id="revisionsList"></div>
+                <div id="revisionPreview" style="margin-top:var(--space-lg)"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeRevisionHistory()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Editor Modal -->
+    <div class="modal-overlay" id="assignModalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="assignModalTitle">New Assignment</h3>
+                <button class="modal-close" onclick="closeAssignmentEditor()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="assignTitle" placeholder="e.g. Build a Portfolio Page">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="assignDesc" rows="4"
+                        placeholder="What should the student do?"></textarea>
+                </div>
+                <div class="form-row" style="display:flex;gap:var(--space-md)">
+                    <div class="form-group" style="flex:1">
+                        <label>Due offset (days)</label>
+                        <input type="number" id="assignDue" value="7" min="0">
+                    </div>
+                    <div class="form-group" style="flex:1">
+                        <label>Max points</label>
+                        <input type="number" id="assignPoints" value="100" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeAssignmentEditor()">Cancel</button>
+                <button class="btn-save" onclick="saveAssignmentEditor()">Save</button>
+            </div>
         </div>
     </div>
 

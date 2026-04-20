@@ -317,6 +317,47 @@ async function deleteCourseThumbnail(publicUrl) {
 }
 
 /* ----------------------------------------------------------
+   Lesson Attachment Helpers (admin-only upload; signed read)
+   ---------------------------------------------------------- */
+
+async function uploadLessonAttachment(file, lessonId) {
+    const timestamp = Date.now();
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const filePath = `${lessonId}/${timestamp}_${safeName}`;
+
+    const { data, error } = await supabase.storage
+        .from('lesson-files')
+        .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: file.type || 'application/octet-stream'
+        });
+    if (error) throw error;
+
+    return {
+        path: data.path,
+        file_name: file.name,
+        file_size: file.size,
+        mime_type: file.type || null
+    };
+}
+
+async function getLessonAttachmentUrl(filePath, expiresInSeconds = 3600) {
+    const { data, error } = await supabase.storage
+        .from('lesson-files')
+        .createSignedUrl(filePath, expiresInSeconds);
+    if (error) throw error;
+    return data.signedUrl;
+}
+
+async function deleteLessonAttachment(filePath) {
+    const { error } = await supabase.storage
+        .from('lesson-files')
+        .remove([filePath]);
+    if (error) throw error;
+}
+
+/* ----------------------------------------------------------
    Admin User Management Helpers
    ---------------------------------------------------------- */
 
@@ -413,6 +454,9 @@ window.deleteSubmissionFile = deleteSubmissionFile;
 window.submitAssignment = submitAssignment;
 window.uploadCourseThumbnail = uploadCourseThumbnail;
 window.deleteCourseThumbnail = deleteCourseThumbnail;
+window.uploadLessonAttachment = uploadLessonAttachment;
+window.getLessonAttachmentUrl = getLessonAttachmentUrl;
+window.deleteLessonAttachment = deleteLessonAttachment;
 window.adminCreateUser = adminCreateUser;
 window.adminUpdateProfile = adminUpdateProfile;
 window.adminDeleteProfile = adminDeleteProfile;
@@ -437,6 +481,9 @@ window.WebGeniusDB = {
     submitAssignment,
     uploadCourseThumbnail,
     deleteCourseThumbnail,
+    uploadLessonAttachment,
+    getLessonAttachmentUrl,
+    deleteLessonAttachment,
     adminCreateUser,
     adminUpdateProfile,
     adminDeleteProfile,

@@ -42,7 +42,7 @@ function showToast(message, type = 'success') {
    ---------------------------------------------------------- */
 let _modalResolve = null; // for confirmDialog
 
-function openModal(titleText, bodyHTML, onSave) {
+function openModal(titleText, bodyHTML, onSave, opts = {}) {
   const overlay = document.getElementById('modalOverlay');
   document.getElementById('modalTitle').textContent = titleText;
   document.getElementById('modalBody').innerHTML = bodyHTML;
@@ -53,19 +53,25 @@ function openModal(titleText, bodyHTML, onSave) {
   newSave.id = 'modalSave';
   newSave.textContent = 'Save';
   newSave.disabled = false;
-  newSave.addEventListener('click', async () => {
-    newSave.textContent = 'Saving…';
-    newSave.disabled = true;
-    try {
-      await onSave();
-      closeModal();
-      showToast('Saved successfully!');
-    } catch (err) {
-      showToast(err.message || 'Save failed', 'error');
-      newSave.textContent = 'Save';
-      newSave.disabled = false;
-    }
-  });
+
+  if (opts.hideSave || !onSave) {
+    newSave.style.display = 'none';
+  } else {
+    newSave.style.display = '';
+    newSave.addEventListener('click', async () => {
+      newSave.textContent = 'Saving…';
+      newSave.disabled = true;
+      try {
+        await onSave();
+        closeModal();
+        showToast('Saved successfully!');
+      } catch (err) {
+        showToast(err.message || 'Save failed', 'error');
+        newSave.textContent = 'Save';
+        newSave.disabled = false;
+      }
+    });
+  }
 
   overlay.classList.add('open');
 }
@@ -919,7 +925,18 @@ let coursesCache = [];
 let selectedCourseId = null;
 
 async function loadCourses() {
-  const { data, error } = await sb().from('courses').select('*, cohorts(name)').order('sort_order');
+  let query = sb().from('courses').select('*, cohorts(name)').order('sort_order');
+  if (isTeacher()) {
+    // Teachers only see courses they're collaborators on.
+    const { data: links } = await sb()
+      .from('course_collaborators')
+      .select('course_id')
+      .eq('teacher_id', window.currentAdminProfile.id);
+    const ids = (links || []).map(l => l.course_id);
+    if (ids.length === 0) { coursesCache = []; renderCourses([]); return; }
+    query = sb().from('courses').select('*, cohorts(name)').in('id', ids).order('sort_order');
+  }
+  const { data, error } = await query;
   if (error) throw error;
   coursesCache = data || [];
 
@@ -958,12 +975,21 @@ function renderCourses(courses) {
     const langBadge = (c.language || 'en') === 'lt'
       ? '<span class="lang-badge lang-badge-lt">🇱🇹 LT</span>'
       : '<span class="lang-badge lang-badge-en">🇺🇸 EN</span>';
+    const status = c.status || 'published';
+    const statusBadge = status === 'published'
+      ? '<span class="badge badge-active" style="margin-left:.5rem">Published</span>'
+      : status === 'archived'
+        ? '<span class="badge" style="margin-left:.5rem;background:var(--gray-200);color:var(--gray-700)">Archived</span>'
+        : '<span class="badge" style="margin-left:.5rem;background:#fef3c7;color:#92400e">Draft</span>';
     return `
     <tr class="${selectedCourseId === c.id ? 'selected-row' : ''}" style="cursor:pointer" onclick="selectCourse('${c.id}')">
       <td>
         <div style="display:flex;align-items:center">
           ${thumb}
-          <strong style="color:var(--gray-900)">${esc(c.title)}</strong>
+          <div>
+            <strong style="color:var(--gray-900)">${esc(c.title)}</strong>
+            ${statusBadge}
+          </div>
         </div>
       </td>
       <td>${langBadge}</td>
@@ -973,7 +999,9 @@ function renderCourses(courses) {
       <td class="actions-cell">
         <button class="btn-sm" style="background:var(--primary-100);color:var(--primary-700);margin-right:4px" onclick="event.stopPropagation(); window.location.href='builder.html?id=${c.id}'">Builder</button>
         <button class="btn-sm btn-edit" onclick="event.stopPropagation(); editCourse('${c.id}')">Edit</button>
-        <button class="btn-sm btn-danger" onclick="event.stopPropagation(); deleteCourse('${c.id}')">Delete</button>
+        ${isTeacher() ? '' : `<button class="btn-sm" title="Manage collaborators" onclick="event.stopPropagation(); openCollaboratorsModal('${c.id}')">👥</button>`}
+        ${isTeacher() ? '' : `<button class="btn-sm" title="Duplicate" onclick="event.stopPropagation(); duplicateCourse('${c.id}')">⎘</button>`}
+        ${isTeacher() ? '' : `<button class="btn-sm btn-danger" onclick="event.stopPropagation(); deleteCourse('${c.id}')">Delete</button>`}
       </td>
     </tr>
   `;
@@ -1059,31 +1087,55 @@ function openCourseModal(course = null) {
           ${cohortOptions}
         </select>
       </div>
+      ${isEdit ? `
+      <div class="form-group">
+        <label>Status</label>
+        <select id="mCourseStatus">
+          <option value="draft" ${(course?.status || 'draft') === 'draft' ? 'selected' : ''}>Draft (hidden from students)</option>
+          <option value="published" ${course?.status === 'published' ? 'selected' : ''}>Published (visible to students)</option>
+          <option value="archived" ${course?.status === 'archived' ? 'selected' : ''}>Archived</option>
+        </select>
+        <small style="color:var(--gray-500)">Use the Builder's "Publish" button for a pre-publish checklist.</small>
+      </div>` : `
+      <p style="font-size:.85rem;color:var(--gray-500);margin-top:.5rem">New courses start as <strong>Draft</strong>. Publish from the Builder once content is ready.</p>
+      `}
     `,
     async () => {
+      const title = document.getElementById('mCourseTitle').value.trim();
+      if (!title) throw new Error('Title is required');
+      if (title.length > 255) throw new Error('Title is too long (max 255 characters).');
+
       const payload = {
-        title: document.getElementById('mCourseTitle').value.trim(),
+        title,
         language: document.getElementById('mCourseLang').value,
         description: document.getElementById('mCourseDesc').value.trim(),
         type: document.getElementById('mCourseType').value,
         month: parseInt(document.getElementById('mCourseMonth').value) || null,
         cohort_id: document.getElementById('mCourseCohort').value || null,
       };
-      if (!payload.title) throw new Error('Title is required');
+      if (isEdit) {
+        payload.status = document.getElementById('mCourseStatus').value;
+      } else {
+        payload.status = 'draft';
+      }
 
       // Handle thumbnail - check for pending file upload
       const fileInput = document.getElementById('mCourseThumbFile');
       const thumbUrl = document.getElementById('mCourseThumbUrl').value.trim();
 
+      if (thumbUrl && !isValidHttpUrl(thumbUrl)) {
+        throw new Error('Thumbnail URL must start with http:// or https://');
+      }
+
       if (fileInput.files.length > 0) {
-        // Upload file first
-        const courseId = isEdit ? course.id : 'temp-' + Date.now();
+        const file = fileInput.files[0];
+        if (file.size > 5 * 1024 * 1024) throw new Error('Thumbnail file must be under 5 MB.');
+        const courseIdForUpload = isEdit ? course.id : 'new-' + Date.now();
         try {
-          payload.thumbnail = await uploadCourseThumbnail(fileInput.files[0], courseId);
+          payload.thumbnail = await uploadCourseThumbnail(file, courseIdForUpload);
         } catch (e) {
           console.error('Thumbnail upload failed:', e);
-          // Fall back to URL if upload fails
-          payload.thumbnail = thumbUrl || null;
+          throw new Error('Thumbnail upload failed: ' + (e?.message || 'unknown error'));
         }
       } else {
         payload.thumbnail = thumbUrl || null;
@@ -1092,27 +1144,24 @@ function openCourseModal(course = null) {
       if (isEdit) {
         const { error } = await sb().from('courses').update(payload).eq('id', course.id);
         if (error) throw error;
+        await loadCourses();
       } else {
         payload.sort_order = coursesCache.length;
         const { data, error } = await sb().from('courses').insert(payload).select().single();
         if (error) throw error;
-
-        // Redirect to builder
+        if (!data?.id) throw new Error('Course was created but no id was returned.');
         window.location.href = `builder.html?id=${data.id}`;
-        return; // Stop here, page will unload
-      }
-      await loadCourses();
-
-      // If it was a new course, redirect to builder
-      if (!isEdit && !error) {
-        // We need the ID of the new course
-        // The insert call above didn't return data. Let's fix that.
-        // OR we can just query for the latest course, OR change the insert to select().
-
-        // PROPER WAY: Update the insert call to return the new record.
       }
     }
   );
+}
+
+// Basic URL sanity check — permissive but blocks obvious junk.
+function isValidHttpUrl(value) {
+  try {
+    const u = new URL(value);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  } catch { return false; }
 }
 
 function editCourse(id) {
@@ -1156,6 +1205,185 @@ async function deleteCourse(id) {
   showToast('Course deleted');
   if (selectedCourseId === id) selectedCourseId = null;
   await loadCourses();
+}
+
+const TEACHER_ALLOWED_SECTIONS = new Set(['courses', 'assignments', 'schedule']);
+
+function isTeacher() {
+  return window.currentAdminProfile?.role === 'teacher';
+}
+
+function applyTeacherRestrictions() {
+  // Hide sidebar sections the teacher shouldn't access.
+  document.querySelectorAll('.sidebar-nav a[data-section]').forEach(a => {
+    if (!TEACHER_ALLOWED_SECTIONS.has(a.dataset.section)) {
+      a.style.display = 'none';
+    }
+  });
+  // Hide "+ New Course" — teachers can't create courses.
+  document.querySelectorAll('button[onclick="openCourseModal()"]').forEach(b => b.style.display = 'none');
+  // If we landed on a forbidden hash, redirect to courses.
+  const hashSection = (location.hash.replace('#', '') || 'dashboard').split('?')[0];
+  if (!TEACHER_ALLOWED_SECTIONS.has(hashSection)) {
+    location.hash = '#courses';
+  }
+}
+
+/* ----------------------------------------------------------
+   Course Collaborators (teacher assignment) — admin only
+   ---------------------------------------------------------- */
+async function openCollaboratorsModal(courseId) {
+  const course = coursesCache.find(c => c.id === courseId);
+  if (!course) return;
+
+  const [teachersRes, linksRes] = await Promise.all([
+    sb().from('profiles').select('id, full_name').eq('role', 'teacher').order('full_name'),
+    sb().from('course_collaborators').select('*, profiles:teacher_id(id, full_name)').eq('course_id', courseId)
+  ]);
+
+  if (teachersRes.error) { showToast('Failed to load teachers: ' + teachersRes.error.message, 'error'); return; }
+  if (linksRes.error) { showToast('Failed to load collaborators: ' + linksRes.error.message, 'error'); return; }
+
+  const teachers = teachersRes.data || [];
+  const links = linksRes.data || [];
+  const assignedIds = new Set(links.map(l => l.teacher_id));
+  const available = teachers.filter(t => !assignedIds.has(t.id));
+
+  const teacherOptions = available.length
+    ? available.map(t => `<option value="${t.id}">${esc(t.full_name || '(no name)')}</option>`).join('')
+    : '<option value="" disabled>No unassigned teachers</option>';
+
+  const rows = links.length
+    ? links.map(l => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .7rem;border:1px solid var(--gray-200);border-radius:6px;margin-bottom:6px">
+          <span>${esc(l.profiles?.full_name || '(unknown)')}</span>
+          <button class="btn-sm btn-danger" onclick="removeCollaborator('${l.id}', '${courseId}')">Remove</button>
+        </div>`).join('')
+    : '<p style="color:var(--gray-500);font-size:.88rem">No collaborators yet. Add a teacher below.</p>';
+
+  openModal(
+    `Collaborators — ${course.title}`,
+    `
+      <p style="font-size:.85rem;color:var(--gray-500);margin-top:0">Assigned teachers can edit this course's content (modules, lessons, assignments, attachments).</p>
+      <div style="margin-bottom:var(--space-md)">${rows}</div>
+      ${available.length > 0 ? `
+        <div class="form-row" style="display:flex;gap:var(--space-sm);align-items:flex-end">
+          <div class="form-group" style="flex:1">
+            <label>Add teacher</label>
+            <select id="mNewCollabId">${teacherOptions}</select>
+          </div>
+          <button class="btn-sm btn-primary" onclick="addCollaborator('${courseId}')">Add</button>
+        </div>
+      ` : '<p style="font-size:.82rem;color:var(--gray-500)">All teacher accounts are already assigned. Create new teachers from the Students section (change role to Teacher).</p>'}
+    `,
+    null,
+    { hideSave: true, cancelText: 'Close' }
+  );
+}
+
+window.addCollaborator = async function (courseId) {
+  const teacherId = document.getElementById('mNewCollabId')?.value;
+  if (!teacherId) return;
+  const { error } = await sb().from('course_collaborators').insert({ course_id: courseId, teacher_id: teacherId });
+  if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+  showToast('Collaborator added');
+  closeModal();
+  openCollaboratorsModal(courseId);
+}
+
+window.removeCollaborator = async function (linkId, courseId) {
+  if (!confirm('Remove this collaborator? They will lose edit access to this course.')) return;
+  const { error } = await sb().from('course_collaborators').delete().eq('id', linkId);
+  if (error) { showToast('Failed: ' + error.message, 'error'); return; }
+  showToast('Collaborator removed');
+  closeModal();
+  openCollaboratorsModal(courseId);
+}
+
+async function duplicateCourse(id) {
+  const src = coursesCache.find(c => c.id === id);
+  if (!src) return;
+  const ok = await confirmDialog(`Duplicate "${src.title}"? Modules, lessons, and assignments will be copied. Attachments will not.`);
+  if (!ok) return;
+
+  const client = sb();
+  showToast('Duplicating course…');
+
+  try {
+    // 1. Copy the course row (force draft status, new title).
+    const { cohorts, id: _omit, created_at: __omit, ...courseFields } = src;
+    const coursePayload = {
+      ...courseFields,
+      title: src.title + ' (copy)',
+      status: 'draft',
+      sort_order: coursesCache.length
+    };
+    const { data: newCourse, error: cErr } = await client.from('courses').insert(coursePayload).select().single();
+    if (cErr) throw cErr;
+
+    // 2. Copy modules and build old→new id map.
+    const { data: srcModules, error: mErr } = await client.from('modules').select('*').eq('course_id', id).order('sort_order');
+    if (mErr) throw mErr;
+    const moduleMap = new Map();
+    if (srcModules?.length) {
+      const modPayload = srcModules.map(m => ({
+        course_id: newCourse.id,
+        title: m.title,
+        sort_order: m.sort_order
+      }));
+      const { data: newModules, error: nmErr } = await client.from('modules').insert(modPayload).select();
+      if (nmErr) throw nmErr;
+      // Match by index — inserts return rows in the same order as input.
+      srcModules.forEach((m, i) => moduleMap.set(m.id, newModules[i].id));
+    }
+
+    // 3. Copy lessons, remapping module_id.
+    const { data: srcLessons, error: lErr } = await client.from('lessons').select('*').eq('course_id', id).order('sort_order');
+    if (lErr) throw lErr;
+    const lessonMap = new Map();
+    if (srcLessons?.length) {
+      const lessonPayload = srcLessons.map(l => ({
+        course_id: newCourse.id,
+        module_id: l.module_id ? moduleMap.get(l.module_id) || null : null,
+        title: l.title,
+        description: l.description,
+        video_url: l.video_url,
+        content: l.content,
+        sort_order: l.sort_order,
+        duration_min: l.duration_min,
+        is_free: l.is_free
+      }));
+      const { data: newLessons, error: nlErr } = await client.from('lessons').insert(lessonPayload).select();
+      if (nlErr) throw nlErr;
+      srcLessons.forEach((l, i) => lessonMap.set(l.id, newLessons[i].id));
+    }
+
+    // 4. Copy assignments.
+    if (lessonMap.size > 0) {
+      const { data: srcAssignments, error: aErr } = await client
+        .from('assignments')
+        .select('*')
+        .in('lesson_id', Array.from(lessonMap.keys()));
+      if (aErr) throw aErr;
+      if (srcAssignments?.length) {
+        const payload = srcAssignments.map(a => ({
+          lesson_id: lessonMap.get(a.lesson_id),
+          title: a.title,
+          description: a.description,
+          due_offset_days: a.due_offset_days,
+          max_points: a.max_points
+        }));
+        const { error: naErr } = await client.from('assignments').insert(payload);
+        if (naErr) throw naErr;
+      }
+    }
+
+    showToast('Course duplicated (draft).', 'success');
+    await loadCourses();
+  } catch (e) {
+    console.error(e);
+    showToast('Duplicate failed: ' + (e?.message || 'unknown'), 'error');
+  }
 }
 
 async function selectCourse(id) {
@@ -1947,7 +2175,7 @@ async function loadStudents() {
   const { data, error } = await sb()
     .from('profiles')
     .select('*, enrollments(id, status, enrolled_at, cohort_id, cohorts(name))')
-    .eq('role', 'student')
+    .in('role', ['student', 'teacher'])
     .order('created_at', { ascending: false });
   if (error) throw error;
   studentsCache = data || [];
@@ -1976,7 +2204,7 @@ function renderStudents(students) {
           <div style="display:flex;align-items:center;gap:.7rem">
             <div class="admin-avatar">${initials(s.full_name)}</div>
             <div>
-              <div style="font-weight:600;color:var(--gray-900)">${esc(s.full_name || 'Unnamed')}</div>
+              <div style="font-weight:600;color:var(--gray-900)">${esc(s.full_name || 'Unnamed')}${s.role === 'teacher' ? ' <span class="badge" style="background:#ede9fe;color:#6d28d9;font-size:.68rem">Teacher</span>' : ''}</div>
               <div style="font-size:.78rem;color:var(--gray-400)">${s.id.slice(0, 8)}…</div>
             </div>
           </div>
@@ -2215,6 +2443,15 @@ async function openStudentModal(student = null) {
           <option value="lt" ${student?.locale === 'lt' ? 'selected' : ''}>🇱🇹 Lietuvių</option>
         </select>
       </div>
+      ${isEdit ? `
+      <div class="form-group">
+        <label>Role</label>
+        <select id="mStudentRole">
+          <option value="student" ${student?.role === 'student' ? 'selected' : ''}>Student</option>
+          <option value="teacher" ${student?.role === 'teacher' ? 'selected' : ''}>Teacher (can edit assigned courses)</option>
+        </select>
+      </div>
+      ` : ''}
     `,
     async () => {
       const fullName = document.getElementById('mStudentName').value.trim();
@@ -2223,8 +2460,8 @@ async function openStudentModal(student = null) {
       if (!fullName) throw new Error('Full name is required');
 
       if (isEdit) {
-        // Update existing student
-        await adminUpdateProfile(student.id, { full_name: fullName, locale });
+        const role = document.getElementById('mStudentRole')?.value || student.role;
+        await adminUpdateProfile(student.id, { full_name: fullName, locale, role });
         showToast('Student updated');
       } else {
         // Create new student
@@ -3098,17 +3335,19 @@ function formatDate(dateStr) {
    INITIALIZATION
    ---------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', async () => {
-  // Auth guard
+  // Auth guard — allow admins and teachers; teachers see a limited subset.
   try {
     await ensureSupabase();
     const profile = await getProfile();
-    if (!profile || profile.role !== 'admin') {
+    if (!profile || (profile.role !== 'admin' && profile.role !== 'teacher')) {
       window.location.href = 'login.html';
       return;
     }
-    // Set admin name in sidebar
-    document.getElementById('adminName').textContent = profile.full_name || 'Admin';
+    window.currentAdminProfile = profile;
+    document.getElementById('adminName').textContent = profile.full_name || (profile.role === 'teacher' ? 'Teacher' : 'Admin');
     document.getElementById('adminInitials').textContent = initials(profile.full_name);
+
+    if (profile.role === 'teacher') applyTeacherRestrictions();
   } catch (e) {
     window.location.href = 'login.html';
     return;

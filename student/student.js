@@ -71,6 +71,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     userProfile = profile;
 
+    // Preview mode: admins/teachers can browse the student view with a banner.
+    if (window.location.hash.includes('preview=1') && (userProfile?.role === 'admin' || userProfile?.role === 'teacher')) {
+        window._isPreviewMode = true;
+        renderPreviewBanner();
+    }
+
     // Initialize language based on profile locale
     if (typeof initStudentLang === 'function') {
         initStudentLang(userProfile?.locale);
@@ -82,6 +88,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initial Route
     handleRoute();
 });
+
+function renderPreviewBanner() {
+    if (document.getElementById('previewBanner')) return;
+    const bar = document.createElement('div');
+    bar.id = 'previewBanner';
+    bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#fde68a;color:#92400e;padding:8px 16px;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.1)';
+    bar.innerHTML = `
+        <span>👁 <strong>Preview mode</strong> — you're viewing this as a student would. Your progress is not tracked.</span>
+        <button style="background:transparent;border:1px solid #92400e;color:#92400e;padding:3px 10px;border-radius:4px;font-size:.8rem;cursor:pointer" onclick="window.close()">Close preview</button>
+    `;
+    document.body.appendChild(bar);
+    document.body.style.paddingTop = '38px';
+}
 
 /* ----------------------------------------------------------
    UI SETUP
@@ -589,6 +608,10 @@ async function loadLessonDetail(container, params) {
 
 window.toggleLessonComplete = async function (lessonId, setComplete) {
     const btn = document.getElementById('btnMarkComplete');
+    if (window._isPreviewMode) {
+        showToast('Preview mode — progress is not tracked.', 'info');
+        return;
+    }
     btn.disabled = true;
 
     const { error } = await sb.from('lesson_progress').upsert({
